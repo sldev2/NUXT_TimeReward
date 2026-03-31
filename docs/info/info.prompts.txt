@@ -1,0 +1,116 @@
+Generally, we are involved in migrating the original .NET/Blazor/Postgresql/MudBlazor web app, into a very different stack, including Nuxt/Vue/typescript/Supabase/Tailwind.
+
+See \docs\PRD - Nuxt Supabase Migration.md. Keep this file up to date.
+
+when the following MCP Servers are not successfully started, tell me immediately, rather than expecting me to manually reproduce actions that these MCP servers could do:
+* mcp-time-reward-test 
+* playwright 
+
+When you make database changes, you need to keep NUXT_TimeReward/supabase/migrations/ up to date by adding any migration file or files needes, so that when the time comes to deploy to a new environment, we can breeze through creating a new database for it
+
+Don't use taskmaster to discover and plan tasks and implementation plans. If it is true that this is what you would choose, if  left to yourself to decide, let me know, and we can discuss.
+
+In general, though, I think you have your own means of creating implementation plans, not involving taskmaster.
+
+Keep all documentation related to the new NUXT version we are migrating to, under /NUXT_TimeReward/docs
+
+Keep /NUXT_TimeReward/CHANGELOG.md and /NUXT_TimeReward/docs/release-operations-runbook.md up to date.
+
+   I am developing on a Windows 11 system. Hence, when you suggest command line operations that you intend for me to run, please give commands that work in a Windoows command shell. 
+   Only if Linux is required, should you give me Linux commands. I do have Ubuntu installed, as part of WSL. I also have Git Bash installed.
+   Only if Powershell is required, should you give me commands to run in powershell. Again, I am used to the Windows command prompt.
+
+
+	When asked to create a step-by-step implementation guide, the guide should consist of checklist items, with sub-checklist items (when required), where each line starts with WHO is to complete the item: "(ai)", "(human)", or "(both)". "(both)" means: both ai and human. 
+	The list should be in more-or-less sequential order of completion desired
+
+When creating or modifying Playwright tests for the NUXT_TimeReward project:
+   - All new Playwright tests should be created in or under the NUXT_TimeReward\Playwright folder
+   - After adding or modifying tests, update NUXT_TimeReward\Playwright\index.md to reflect:
+     * Test name and file path
+     * Description of what the test verifies
+     * Command to run the test from the command line
+     * Expected output format
+     * MCP prompt version (if applicable), or note why MCP cannot run it
+   - Tests that require multiple browser types (e.g., Chrome + Edge simultaneously) cannot be run via Playwright MCP server; document this limitation in NUXT_TimeReward\Playwright\index.md
+   - the model for NUXT_TimeReward\Playwright\index.md should be: \Playwright2026\index.md
+
+
+More specifically, see the latest NUXT_TimeReward/docs/SESSION_NOTES_2026-MM-DD.md to see what we are working on, now.
+
+When I ask you to update the session notes, which have the form SESSION_NOTES_2026-MM-DD.md:
+   - First, determine today's date by running `Get-Date -Format "yyyy-MM-dd"` — do NOT trust the date provided in system metadata, as it can be wrong
+   - Check if the latest session notes file is dated as today; if not, copy its contents into a new file with today's date, then update the new file
+   - Assume I will be restarting the chat imminently when I ask you to do this
+
+use mcp-time-reward-test for manipulating the development database that we are currently using for the NUXT app
+
+NUXT_TimeReward will be the future root folder of the migrated application. I don't want it cluttered up with new files (which should go somewhere in the sub-folder structure). The common exceptions, like a Readme file, are OK. If you're not sure where to put a new file, ask me
+
+Be mindful of docs/ignore.md
+
+When previously working on the parent Blazor project, initial ai chat prompts called attention to the following files. While I hope you can ignore them for purposes of doing the migration, if not, here they are:
+docs/architecture.md, 'docs/PRD current.md', 'docs/PRD - GUI and Function of Dashboard.md', 'docs/IMPLEMENTATION and CONFIGURATIONS DETAILS.md', /docs/TrialBypass.md, \AutomatedTesting\README.md, CHANGELOG.md,  \Playwright2026\index.md, and 'docs/variables for cloud test providers.md'
+
+
+
+==================================================================================================================================
+
+Generally, we are involved in migrating the original .NET/Blazor/Postgresql/MudBlazor web app, into a very different stack, including Nuxt/Vue/typescript/Supabase/tailwind. The temporary home of this migrated project is /NUXT_TimeReward
+
+See \docs\PRD - Nuxt Supabase Migration.md
+
+This file was recently upgraded, after it was discovered that there were major deficiencies in it regarding autopause, and the autopause status lines.
+
+Because this was a major update, a new plan for finishing the migration should be created.
+
+Furthermore, other deficiencies of the original PRD for the NUXT app were identified, and documented in \docs\PRD - Nuxt Supabase Migration - non-AutoPause.md
+
+Consequently, I first want to know if you think \docs\PRD - Nuxt Supabase Migration - non-AutoPause.md should be first merged into a final update of \docs\PRD - Nuxt Supabase Migration.md.
+
+After a PRD, or PRD's, are established, the next task will be to create a plan to finish implementing the migrated project.
+
+
+
+
+
+
+====================================================================================================================================================================================
+
+Generally, we are involved in migrating the original .NET/Blazor/Postgresql web app, into a very different stack, including Nuxt/Vue/typescript/Supabase.
+
+See \docs\PRD - Nuxt Supabase Migration.md
+
+when the following MCP Servers are not successfully started, tell me immediatel (rather than expecting me to manually reproduce actions that these MCP servers could do:
+* mcp-time-reward-test 
+* playwrite 
+
+Keep all documentation related to the new NUXT version we are migrating to, under /NUXT_TimeReward/docs
+
+Keep /NUXT_TimeReward/CHANGELOG.md and /NUXT_TimeReward/docs/release-operations-runbook.md up to date, once they are created.
+
+   I am developing on a Windows 11 system. Hence, when you suggest command line operations that you intend for me to run, please give commands that work in a Windoows command shell. 
+   Only if Linux is required, should you give me Linux commands. I do have Ubuntu installed, as part of WSL. I also have Git Bash installed.
+   Only if Powershell is required, should you give me commands to run in powershell. Again, I am used to the Windows command prompt.
+
+
+	When asked to create a step-by-step implementation guide, the guide should consist of checklist items, with sub-checklist items (when required), where each line starts with "(ai)", "(human)", or "(both)". "(both)" means: both ai and human. 
+	The list should be in more-or-less sequential order of completion desired
+
+When creating or modifying Playwright tests for the NUXT_TimeReward project:
+   - All new Playwright tests should be created in the NUXT_TimeReward\Playwright folder
+   - After adding or modifying tests, update NUXT_TimeReward\Playwright\index.md to reflect:
+     * Test name and file path
+     * Description of what the test verifies
+     * Command to run the test from the command line
+     * Expected output format
+     * MCP prompt version (if applicable), or note why MCP cannot run it
+   - Tests that require multiple browser types (e.g., Chrome + Edge simultaneously) cannot be run via Playwright MCP server; document this limitation in NUXT_TimeReward\Playwright\index.md
+   - the model for NUXT_TimeReward\Playwright\index.md should be: \Playwright2026\index.md
+
+
+More specifically, see NUXT_TimeReward/docs/SESSION_NOTES_2026-01-25.md, to see what we are working on, now.
+
+NUXT_TimeReward will be the future root folder of the migrated application. I don't want it cluttered up with new files (which should go somewhere in the sub-folder structure). The common exceptions, like a Readme file, are OK. If you're not sure where to put a new file, ask me
+
+

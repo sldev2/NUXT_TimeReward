@@ -1,0 +1,30 @@
+{
+  "name": "NUXT_TimeReward",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxtjs/supabase": "^2.0.3",
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@pinia/nuxt": "^0.11.3",
+    "@vueuse/nuxt": "^14.1.0",
+    "nuxt": "^3.20.2",
+    "pinia": "^3.0.4",
+    "stripe": "^20.3.0",
+    "vue": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.9",
+    "dotenv": "^16.4.5",
+    "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "ignore": "5.3.2"
+  }
+}

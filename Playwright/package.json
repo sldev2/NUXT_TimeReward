@@ -1,0 +1,22 @@
+{
+  "name": "nuxt-timereward-playwright",
+  "version": "1.0.0",
+  "description": "Playwright E2E tests for Nuxt TimeReward application",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:multi-tab": "npx playwright test multi-tab-sync.spec.ts --headed",
+    "test:cross-browser": "npx playwright test cross-browser-sync.spec.ts --headed",
+    "test:multi-activity": "npx playwright test multi-activity-sequence.spec.ts --headed",
+    "test:headed": "npx playwright test --headed",
+    "install-browsers": "npx playwright install",
+    "reset-timers": "npx ts-node test-utils/reset-timers.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "@types/node": "^20.10.0",
+    "dotenv": "^16.3.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
