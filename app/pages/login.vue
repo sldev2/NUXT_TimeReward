@@ -5,25 +5,37 @@ definePageMeta({
 })
 
 const { signIn, isLoading, error } = useAuth()
+const supabase = useHealthySupabaseClient()
 const { isOnline } = useNetwork()
 const connectionState = useState<string>('connection-state', () => 'connecting')
 const probeOffline = ref(false)
+const showMagicLinkTest = import.meta.dev
+const runtimeConfig = useRuntimeConfig()
 
 // On client mount, probe the network to detect offline state
 // even when navigator.onLine lies (common on Windows)
 const supabaseUrl = import.meta.client
-  ? (useRuntimeConfig().public.supabaseUrl || useRuntimeConfig().public.supabase?.url)
+  ? (runtimeConfig.public.supabaseUrl || runtimeConfig.public.supabase?.url)
+  : ''
+const supabaseKey = import.meta.client
+  ? (runtimeConfig.public.supabase?.key || runtimeConfig.public.supabaseKey || '')
   : ''
 
 async function probeNetwork() {
+  let timer: ReturnType<typeof setTimeout> | null = null
   try {
     const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), 3000)
-    await fetch(`${supabaseUrl}/rest/v1/`, { method: 'HEAD', signal: controller.signal })
-    clearTimeout(timer)
+    timer = setTimeout(() => controller.abort(), 3000)
+    await fetch(`${supabaseUrl}/auth/v1/health`, {
+      method: 'GET',
+      headers: supabaseKey ? { apikey: supabaseKey } : undefined,
+      signal: controller.signal
+    })
     probeOffline.value = false
   } catch {
     probeOffline.value = true
+  } finally {
+    if (timer) clearTimeout(timer)
   }
 }
 
@@ -58,6 +70,10 @@ const isEffectivelyOnline = computed(() => {
 })
 
 const passwordVisible = ref(false)
+const magicEmail = ref('')
+const magicLinkLoading = ref(false)
+const magicLinkMessage = ref<string | null>(null)
+const magicLinkError = ref<string | null>(null)
 
 const form = reactive({
   username: '',
@@ -69,6 +85,34 @@ async function handleSubmit() {
     username: form.username,
     password: form.password
   })
+}
+
+async function sendMagicLink() {
+  if (!import.meta.client) return
+
+  magicLinkLoading.value = true
+  magicLinkMessage.value = null
+  magicLinkError.value = null
+
+  try {
+    const { error } = await supabase.auth.signInWithOtp({
+      email: magicEmail.value.trim(),
+      options: {
+        emailRedirectTo: `${window.location.origin}/confirm`,
+        shouldCreateUser: false
+      }
+    })
+
+    if (error) throw error
+
+    magicLinkMessage.value = 'Magic link sent. Open the email and confirm it returns to /confirm.'
+  } catch (err) {
+    magicLinkError.value = err instanceof Error
+      ? err.message
+      : 'Unable to send magic link right now.'
+  } finally {
+    magicLinkLoading.value = false
+  }
 }
 </script>
 
@@ -178,6 +222,60 @@ async function handleSubmit() {
             Create one
           </NuxtLink>
         </p>
+
+        <div
+          v-if="showMagicLinkTest"
+          class="mt-8 border-t border-slate-700/50 pt-6"
+        >
+          <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-400">
+            Dev-only callback test
+          </h2>
+          <p class="mt-2 text-sm text-slate-400">
+            Send a magic link to an existing confirmed email address to verify the `/confirm` callback flow.
+          </p>
+
+          <div v-if="magicLinkError" class="mt-4 rounded-lg border border-red-500/50 bg-red-500/10 p-4 text-sm text-red-400">
+            {{ magicLinkError }}
+          </div>
+
+          <div v-if="magicLinkMessage" class="mt-4 rounded-lg border border-emerald-500/50 bg-emerald-500/10 p-4 text-sm text-emerald-400">
+            {{ magicLinkMessage }}
+          </div>
+
+          <form class="mt-4 space-y-4" @submit.prevent="sendMagicLink">
+            <div>
+              <label for="magic-email" class="block text-sm font-medium text-slate-300 mb-2">
+                Test email
+              </label>
+              <input
+                id="magic-email"
+                v-model="magicEmail"
+                type="email"
+                required
+                autocomplete="email"
+                class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg
+                       text-white placeholder-slate-500
+                       focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
+                       transition-all duration-200"
+                placeholder="confirmed-user@example.com"
+              />
+            </div>
+
+            <button
+              type="submit"
+              :disabled="magicLinkLoading || !isEffectivelyOnline || !magicEmail.trim()"
+              class="w-full py-3 px-4 bg-slate-700/60 border border-slate-600
+                     text-white font-semibold rounded-lg
+                     hover:bg-slate-700
+                     focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-slate-800
+                     disabled:opacity-50 disabled:cursor-not-allowed
+                     transition-all duration-200"
+            >
+              <span v-if="magicLinkLoading">Sending magic link...</span>
+              <span v-else>Send magic-link test</span>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>

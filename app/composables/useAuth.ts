@@ -10,6 +10,30 @@ function isNetworkError(e: unknown): boolean {
   return false
 }
 
+function getErrorMessage(e: unknown): string {
+  const dataMessage = (e as any)?.data?.message
+  if (typeof dataMessage === 'string' && dataMessage.length > 0) {
+    if (/email rate limit exceeded/i.test(dataMessage)) {
+      return 'Too many auth emails were sent recently. Please wait a while before trying again.'
+    }
+    return dataMessage
+  }
+
+  const statusMessage = (e as any)?.statusMessage
+  if (typeof statusMessage === 'string' && statusMessage.length > 0) {
+    return statusMessage
+  }
+
+  if (e instanceof Error && e.message) {
+    if (/429/.test(e.message) && /server error/i.test(e.message)) {
+      return 'Too many auth emails were sent recently. Please wait a while before trying again.'
+    }
+    return e.message
+  }
+
+  return 'Something went wrong. Please try again in a moment.'
+}
+
 export function useAuth() {
   const supabase = useHealthySupabaseClient()
   const user = useSupabaseUser()
@@ -118,7 +142,7 @@ export function useAuth() {
       const canReachServer = typeof navigator !== 'undefined' && navigator.onLine
       await navigateTo('/home', canReachServer ? { external: true } : undefined)
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Something went wrong. Please try again in a moment.'
+      error.value = getErrorMessage(e)
     } finally {
       isLoading.value = false
     }
@@ -148,11 +172,8 @@ export function useAuth() {
       await supabase.auth.signOut()
       profile.value = null
 
-      // Create user via server-side admin API. This bypasses GoTrue's email
-      // validation and confirmation email sending, which can fail due to
-      // Supabase free-tier rate limits. The user is created pre-confirmed
-      // (when NUXT_SKIP_EMAIL_CONFIRMATION=true) or unconfirmed (production).
-      // The on_auth_user_created trigger handles profile/settings creation.
+      // Register via the server endpoint so dev can auto-confirm users while
+      // confirmation-required environments still use the normal signup flow.
       let registerResult
       try {
         registerResult = await $fetch('/api/auth/register', {
@@ -191,7 +212,7 @@ export function useAuth() {
       if (isNetworkError(e)) {
         error.value = 'Unable to connect. Please check your internet connection and try again.'
       } else {
-        error.value = e instanceof Error ? e.message : 'Something went wrong. Please try again in a moment.'
+        error.value = getErrorMessage(e)
       }
     } finally {
       isLoading.value = false

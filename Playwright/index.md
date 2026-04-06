@@ -1,14 +1,30 @@
-# Nuxt TimeReward Playwright Test Suite
+# TimeReward Playwright Test Suite
 
-This folder contains Playwright-based end-to-end tests for the Nuxt TimeReward application.
+This folder contains the standalone Playwright-based end-to-end tests that ship with the extracted `NUXT_TimeReward` repo.
+
+The focus here is the Nuxt application running locally at `http://localhost:3000`. This index documents only the Playwright assets that exist inside this repository.
 
 ## Prerequisites
 
 ```bash
-# Install Playwright and dependencies
-cd NUXT_TimeReward/Playwright
+# Install Playwright dependencies
+cd Playwright
 npm install
 npx playwright install
+```
+
+## Available npm Scripts
+
+From the `Playwright` folder:
+
+```bash
+npm test
+npm run test:multi-tab
+npm run test:cross-browser
+npm run test:multi-activity
+npm run test:headed
+npm run install-browsers
+npm run reset-timers
 ```
 
 ## Test Index (Real Time)
@@ -32,7 +48,7 @@ npx playwright install
 ### Running from Command Line
 
 ```bash
-cd NUXT_TimeReward/Playwright
+cd Playwright
 npx playwright test multi-tab-sync.spec.ts --headed --timeout=300000
 ```
 
@@ -40,13 +56,13 @@ npx playwright test multi-tab-sync.spec.ts --headed --timeout=300000
 
 PowerShell:
 ```powershell
-cd NUXT_TimeReward/Playwright
+cd Playwright
 $env:AUTOPAUSE_MINUTES=3; $env:ENTER_FOR_CLOSE=1; npx playwright test multi-tab-sync.spec.ts --headed --timeout=300000
 ```
 
 Windows Command Prompt (cmd.exe):
 ```cmd
-cd NUXT_TimeReward\Playwright
+cd Playwright
 set AUTOPAUSE_MINUTES=3 && set ENTER_FOR_CLOSE=1 && npx playwright test multi-tab-sync.spec.ts --headed --timeout=300000
 ```
 
@@ -79,7 +95,7 @@ Running 1 test using 1 worker
 ### Running from Command Line
 
 ```bash
-cd NUXT_TimeReward/Playwright
+cd Playwright
 npx playwright test cross-browser-sync.spec.ts --headed --timeout=300000
 ```
 
@@ -87,7 +103,7 @@ npx playwright test cross-browser-sync.spec.ts --headed --timeout=300000
 
 PowerShell:
 ```powershell
-cd NUXT_TimeReward/Playwright
+cd Playwright
 $env:AUTOPAUSE_MINUTES=3; $env:ENTER_FOR_CLOSE=1; npx playwright test cross-browser-sync.spec.ts --headed --timeout=300000
 ```
 
@@ -123,7 +139,7 @@ This test CANNOT be run via Playwright MCP server because:
 ### Running from Command Line
 
 ```bash
-cd NUXT_TimeReward/Playwright
+cd Playwright
 npx playwright test multi-activity-sequence.spec.ts --headed --timeout=600000
 ```
 
@@ -131,7 +147,7 @@ npx playwright test multi-activity-sequence.spec.ts --headed --timeout=600000
 
 PowerShell:
 ```powershell
-cd NUXT_TimeReward/Playwright
+cd Playwright
 $env:ENTER_FOR_CLOSE=1; npx playwright test multi-activity-sequence.spec.ts --headed --timeout=600000
 ```
 
@@ -206,9 +222,11 @@ const status = await getAutoPauseStatus(page).textContent();
 
 ---
 
-## Differences from Blazor Tests
+## Historical Note
 
-The Nuxt tests are adapted from the original Blazor/MudBlazor tests (`../Playwright2026/`) with these key differences:
+This Playwright folder was adapted from earlier TimeReward Playwright work in the broader project history, but this standalone repo should be treated as the source of truth for the commands, selectors, and expectations documented here.
+
+Compared with the earlier Blazor/MudBlazor-oriented tests, the main Nuxt differences are:
 
 | Aspect | Blazor | Nuxt |
 |--------|--------|------|
@@ -223,7 +241,8 @@ The Nuxt tests are adapted from the original Blazor/MudBlazor tests (`../Playwri
 
 ## Notes
 
-- Ensure the Nuxt dev server is running before executing tests (`npm run dev` in NUXT_TimeReward)
+- Ensure the Nuxt dev server is running before executing tests (`npm run dev` in the repo root)
 - Tests use the configured test user credentials in `test-utils/selectors.ts`
 - Each test has its own default AutoPause interval and configures it before running
 - Use `AUTOPAUSE_MINUTES=N` to override the default for all tests
+- `test-utils/reset-timers.ts` expects environment values from the app root `.env`

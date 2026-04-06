@@ -8,20 +8,30 @@ const { signUp, isLoading, error } = useAuth()
 const { isOnline } = useNetwork()
 const connectionState = useState<string>('connection-state', () => 'connecting')
 const probeOffline = ref(false)
+const runtimeConfig = useRuntimeConfig()
 
 const supabaseUrl = import.meta.client
-  ? (useRuntimeConfig().public.supabaseUrl || useRuntimeConfig().public.supabase?.url)
+  ? (runtimeConfig.public.supabaseUrl || runtimeConfig.public.supabase?.url)
+  : ''
+const supabaseKey = import.meta.client
+  ? (runtimeConfig.public.supabase?.key || runtimeConfig.public.supabaseKey || '')
   : ''
 
 async function probeNetwork() {
+  let timer: ReturnType<typeof setTimeout> | null = null
   try {
     const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), 3000)
-    await fetch(`${supabaseUrl}/rest/v1/`, { method: 'HEAD', signal: controller.signal })
-    clearTimeout(timer)
+    timer = setTimeout(() => controller.abort(), 3000)
+    await fetch(`${supabaseUrl}/auth/v1/health`, {
+      method: 'GET',
+      headers: supabaseKey ? { apikey: supabaseKey } : undefined,
+      signal: controller.signal
+    })
     probeOffline.value = false
   } catch {
     probeOffline.value = true
+  } finally {
+    if (timer) clearTimeout(timer)
   }
 }
 
