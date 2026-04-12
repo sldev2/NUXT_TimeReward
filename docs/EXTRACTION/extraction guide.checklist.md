@@ -31,6 +31,7 @@ npm run dev
   - `.env.example`
   - `docs/ENV-SETUP.md`
   - `vercel.json`
+- Then verify your actual local dev env file (`.env` or `.env.development`) matches that contract.
 - Recreate deployment-platform secrets in the new project.
 
 ## Supabase

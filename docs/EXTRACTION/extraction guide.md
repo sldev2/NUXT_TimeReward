@@ -10,6 +10,12 @@ It is written as a practical checklist, not as a migration plan.
 - The code inside `NUXT_TimeReward` is the source of truth.
 - You do not need guidance on the actual copy/paste step.
 
+## Provenance note
+- The standalone `NUXT_TimeReward` repo was extracted from `DEV_RewardTimersStandalone/NUXT_TimeReward`.
+- The parent extraction-base snapshot is commit `29f7f1b3995e6b9c3ee1aa0727a522d29bfc5cb5`.
+- In the parent repo, that snapshot is tagged `nuxt-timereward-extraction-base`.
+- `get-shit-done` was not in use in the parent repo at the time of extraction; this standalone repo is being prepared for GSD introduction after extraction cleanup.
+
 ## Recommended order
 
 ### 1. [x] Create the standalone repository shell
@@ -61,6 +67,7 @@ Important note:
   - `.env.example`
   - `docs/ENV-SETUP.md`
   - `vercel.json`
+- Then verify that your actual local dev env file (`.env` or `.env.development`, whichever you use) matches that agreed contract.
 
 They are close, but should be treated as something to verify together in the standalone repo.
 
