@@ -89,7 +89,7 @@ ADD COLUMN IF NOT EXISTS include_non_rewardable_in_rewards BOOLEAN DEFAULT true;
 
 ### New Files
 - `supabase/migrations/012_include_non_rewardable_in_rewards.sql` - New database column
-- `docs/SESSION_NOTES_2026-02-01.md` - This file
+- `docs/historical/session-notes/SESSION_NOTES_2026-02-01.md` - This file
 
 ## Testing
 

@@ -56,7 +56,7 @@ Added `subscription` middleware to:
 - `CHANGELOG.md` - Added fix documentation
 
 ### New Files
-- `docs/SESSION_NOTES_2026-01-31.md` - This file
+- `docs/historical/session-notes/SESSION_NOTES_2026-01-31.md` - This file
 
 ## Test Commands
 

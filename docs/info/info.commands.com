@@ -3,7 +3,7 @@
      npm run dev
 
      //then
-     http://localhost:3000/
+     http://localhost:4000/
 
 * // run webhook on localhost  (may needL > stripe login, first)
-     > stripe listen --forward-to localhost:3000/api/stripe/webhook
+     > stripe listen --forward-to localhost:4000/api/stripe/webhook

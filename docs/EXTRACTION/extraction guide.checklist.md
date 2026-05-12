@@ -49,23 +49,20 @@ npm run dev
   - `get_email_by_username`
 
 ## Code and config cleanup
-- Resolve the auth callback mismatch:
-  - `nuxt.config.ts` points to `/confirm`
-  - no `app/pages/confirm.vue` currently exists
-- Decide whether to add the page or change the redirect target.
+- Auth callback: `nuxt.config.ts` uses `/confirm` and `app/pages/confirm.vue` exists (resolved).
 
 ## Documentation cleanup
 - Rewrite `NUXT_TimeReward/docs/README.md` for standalone use.
 - Remove parent-repo references from core docs.
-- Update `Playwright/index.md` so it no longer depends on `../Playwright2026/`.
+- `Playwright/index.md` is standalone (no `Playwright2026` dependency); `baseURL` is `http://localhost:4000` in `playwright.config.ts`.
 - Declare `docs/REARCHITECT/PRD for NUXT.md` the canonical standalone PRD for the extracted repo.
 - Treat `docs/REARCHITECT/historical/PRD for NUXT.extraction-ready.md` and `docs/REARCHITECT/historical/PRD for NUXT.handoff-ready.md` as historical derivative/reference docs, not the primary PRD.
 - Update `docs/README.md` and extraction docs to reflect that decision explicitly.
 
 ## Historical docs decision
-- Decide whether to keep migration-era docs as-is.
-- Or archive them into a historical folder.
-- Or remove the ones most likely to confuse future developers.
+- Migration-era rewards deltas and Group B plan live under `docs/historical/migration/` (see `README.md` there).
+- Session notes archived under `docs/historical/session-notes/` (see `README.md` there).
+- `CHANGELOG.md` at repo root: pruned stale migration appendix; points to `supabase/migrations/` and historical folders.
 
 ## Deployment review
 - Decide whether the standalone app will stay on Vercel or move elsewhere.
@@ -84,6 +81,8 @@ npm install
 npm run dev
 npm run build
 ```
+
+- **Automated (2026-04-24):** `npm install` and `npm run build` succeeded on this repo in a clean agent run. A developer should still run `npm run dev` and complete the manual smoke list below.
 
 - Verify manually:
   - landing page

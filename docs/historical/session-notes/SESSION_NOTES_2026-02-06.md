@@ -427,4 +427,4 @@ Implemented the full break activation flow including take break, active break di
 - `app/pages/home.vue` - Break status UI, countdown, handlers
 - `supabase/migrations/017_break_daily_reset.sql` - Daily reset for breaks
 - `CHANGELOG.md` - Documented new feature
-- `docs/SESSION_NOTES_2026-02-06.md` - This section
+- `docs/historical/session-notes/SESSION_NOTES_2026-02-06.md` - This section

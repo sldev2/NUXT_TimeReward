@@ -283,7 +283,7 @@ Current implementation evidence:
 - `supabase/migrations/010_rewards.sql`
 - `supabase/migrations/023_reward_work_goal.sql`
 - `supabase/migrations/024_reward_8h_workday.sql`
-- `docs/PRD - Nuxt Supabase Migration.Rewards Deltas March11.md`
+- `docs/historical/migration/PRD - Nuxt Supabase Migration.Rewards Deltas March11.md`
 
 ### 6.9 Earned breaks
 The app includes an earned-breaks subsystem.

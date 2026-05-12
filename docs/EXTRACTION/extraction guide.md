@@ -126,90 +126,28 @@ If needed later, track SMTP improvements separately rather than reopening this i
 ## Strongly recommended cleanup tasks
 
 ### 7. [x] Update `docs/README.md`
-`NUXT_TimeReward/docs/README.md` is still written like a migration-era document and still points back to parent-repo materials.
-
-Concrete issues currently present:
-
-- says the app is built with "Nuxt 4"
-- says to run SQL migrations from `docs/database/` which does not match the actual migration location
-- points to `../docs/PRD - Nuxt Supabase Migration.md`
-- points to parent-repo best-practices docs outside the extracted app
-- describes the app as being developed in a subfolder until separation
-
-This file should be rewritten for the standalone repo.
+Completed: `docs/README.md` describes the standalone repo, points at `supabase/migrations`, and lists the canonical PRD under `docs/REARCHITECT/`.
 
 ### 8. [x] Update `Playwright/index.md`
-Current issue:
+Completed: `Playwright/index.md` documents only this repo’s tests; there is no `Playwright2026` dependency. `playwright.config.ts` uses `baseURL: http://localhost:4000` (start `npm run dev` in the repo root before tests).
 
-- `NUXT_TimeReward/Playwright/index.md` still references `../Playwright2026/`
+### 9. [x] Decide which historical docs stay (partial)
+- Rewards migration deltas and Group B plan: **moved** to `docs/historical/migration/` with a short `README.md` explaining they are not canonical.
+- `CHANGELOG.md`: stays at repo root; migration-era appendix pruned in favor of `supabase/migrations/` + pointers in `docs/historical/`.
+- Session notes: **`docs/historical/session-notes/`** (archived from `docs/`); new notes should go there only if you want that rhythm, else use `discussions/` or issues.
 
-That cross-reference will be wrong or useless in the extracted repo.
-
-Update it so the Playwright docs stand on their own.
-
-### 9. [ ] Decide which historical docs stay
-The extracted app contains a lot of useful documentation, but some of it is still framed as migration work from the parent project.
-
-Examples:
-
-- `CHANGELOG.md`
-- many `docs/SESSION_NOTES_*.md` files
-- `docs/Group B Rewards Implementation Plan.md`
-- `docs/PRD - Nuxt Supabase Migration.Rewards Deltas March11.md`
-
-Decide whether to:
-
-- keep them as historical context
-- archive them into a `historical/` or `migration-history/` area
-- or remove the ones that will confuse a future developer
-
-### 10. [ ] Make the new PRD the canonical one
-You now have stronger standalone documents in `/junk`.
-
-For the extracted repo, treat:
-
-- `docs/REARCHITECT/PRD for NUXT.md`
-
-as the canonical standalone PRD.
-
-Treat these as historical derivative/reference documents rather than the primary PRD:
-
-- `docs/REARCHITECT/historical/PRD for NUXT.extraction-ready.md`
-- `docs/REARCHITECT/historical/PRD for NUXT.handoff-ready.md`
-
-Update `docs/README.md` and the extraction docs so they state this explicitly and do not imply that the PRD decision is still unresolved.
+### 10. [x] Make the new PRD the canonical one
+Completed: canonical PRD is `docs/REARCHITECT/PRD for NUXT.md`; derivative PRDs live under `docs/REARCHITECT/historical/`. `docs/README.md` states this.
 
 ### 11. [ ] Review deployment configuration
-`NUXT_TimeReward/vercel.json` exists, so the app already has platform-specific assumptions.
-
-You should decide whether the standalone app will:
-
-- stay on Vercel
-- move to a different host
-- or remain local/dev only for now
-
-If deploying, verify:
-
-- build command
-- output directory
-- environment variable mapping
-- region choice
-- security headers
+Human: choose Vercel vs other vs dev-only. **Reference:** `vercel.json` and the **Deployment (Vercel)** section in `docs/ENV-SETUP.md` (build command, output dir, region, headers, env mapping checklist).
 
 ### 12. [ ] Review external integrations
-The app can depend on more than just Nuxt and Supabase.
-
-Review whether the standalone app should keep, enable, or temporarily disable:
-
-- Stripe
-- Resend
-- Cloudflare Turnstile
-
-If any of these are not ready in the extracted app, document that clearly and fail gracefully rather than leaving partial configuration ambiguous.
+Human: decide which integrations are on per environment. **Reference:** **External integrations** table in `docs/ENV-SETUP.md` (Stripe wired; Resend/Turnstile reserved in config only today).
 
 ## Nice-to-have cleanup tasks
 
-### 13. [ ] Trim parent-project language from docs
+### 13. [~] Trim parent-project language from docs
 Search the extracted repo for wording like:
 
 - migration
@@ -241,7 +179,7 @@ The extracted app should have one obvious canonical onboarding path.
 
 ## Validation checklist
 
-### 16. [ ] Minimum validation after extraction
+### 16. [~] Minimum validation after extraction
 Run these in the standalone copy:
 
 ```bash
@@ -249,6 +187,8 @@ npm install
 npm run dev
 npm run build
 ```
+
+Agent note (2026-04-24): `npm install` + `npm run build` succeeded from a clean checkout-style run; human still needed for `npm run dev` + browser smoke below.
 
 Then verify manually:
 
@@ -300,10 +240,8 @@ The extraction is functionally complete when all of these are true:
 If you want the shortest practical punch list, it is this:
 
 1. Create the new repo shell.
-2. Rebuild env/secrets in the new location.
-3. Apply/verify Supabase migrations and RPCs.
-4. Fix the `/confirm` callback mismatch.
-5. Rewrite `docs/README.md` so it no longer points to parent-repo docs.
-6. Remove or rewrite stale parent-repo references in Playwright/docs.
-7. Choose and move the new canonical PRD into the extracted repo.
-8. Run install, dev, build, and a small end-to-end smoke check.
+2. Rebuild env/secrets in the new location (see `docs/ENV-SETUP.md`).
+3. Apply/verify Supabase migrations and RPCs against the **target** project.
+4. Run `npm install`, `npm run build`, then `npm run dev` and a small browser smoke check.
+5. Confirm deployment target and `vercel.json` (or replacement) match how you ship.
+6. Trim any remaining confusing parent-repo language in docs (optional polish).

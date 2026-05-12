@@ -80,8 +80,8 @@ The settings page does not yet warn about immediate AutoPause when reducing the 
 | `app/pages/home.vue` | `getDisplayAllSeconds()` function, AutoPause status line fix |
 | `docs/PRD - Nuxt Supabase Migration.md` | v1.9 updates (4.1.1, 4.1.3, 4.2.1) |
 | `docs/Manual Testing Plan.md` | Sections 5.2-7.1 checked off, removed non-recurring indicator item |
-| `docs/SESSION_NOTES_2026-03-04.md` | Updated known issues |
-| `docs/SESSION_NOTES_2026-03-05.md` | This file |
+| `docs/historical/session-notes/SESSION_NOTES_2026-03-04.md` | Updated known issues |
+| `docs/historical/session-notes/SESSION_NOTES_2026-03-05.md` | This file |
 | `docs/_FORLATER.md` | New — deferred items tracker |
 | `docs/info/info.prompts.txt` | Session notes reference updated |
 | `Playwright/multi-activity-sequence.spec.ts` | Status line assertion updated |

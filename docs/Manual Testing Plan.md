@@ -2,7 +2,7 @@
 
 **Date**: February 26, 2026 (last updated March 17, 2026)  
 **Purpose**: End-to-end verification of all implemented features before production deployment.  
-**Reference**: `docs/PRD - Nuxt Supabase Migration.md` v2.6  
+**Reference**: `docs/REARCHITECT/PRD for NUXT.md` (canonical standalone PRD; v2.6-era content is superseded by this file)  
 **Test user**: kyrie / @Password1
 
 ---
@@ -12,14 +12,14 @@
 - [x] (human) Ensure the Supabase dev project is running and accessible
 - [x] (ai) Verify database connectivity via mcp-time-reward-test (`list_tables`)
 - [x] (human) Start the NUXT dev server: `cd NUXT_TimeReward && npm run dev`
-- [x] (human) Confirm the app loads at `http://localhost:3000` without console errors
+- [x] (human) Confirm the app loads at `http://localhost:4000` without console errors
 - [x] (ai) Verify Playwright MCP server is available and responsive
 
 ---
 
 ## 2. Landing Page
 
-- [x] (human) Navigate to `http://localhost:3000`
+- [x] (human) Navigate to `http://localhost:4000`
   - [x] Verify hero section displays with gradient title
   - [x] Verify "Sign In" and "Sign Up" buttons are visible
   - [x] Verify feature preview cards are displayed (Real-Time Tracking, Earn Rewards, Works Offline)

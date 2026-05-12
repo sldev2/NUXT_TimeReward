@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Edit Reward modal: pre-populated form for updating reward name, period, work goal, and recurring status
   - `updateBreak()` function added to `useBreaks.ts` composable
   - Click-outside handler to close menus
-- **Activity card layout rearranged to match parent project** — PRD v2.8 Section 9.3.1
+- **Activity card layout rearranged** (start/stop left, checkbox right, overflow menu right) — PRD v2.8 Section 9.3.1
   - Start/Stop button moved to far left
   - Timer values displayed inline below activity name (`Time Xm Xs  All: Xh Xm`)
   - Checkbox moved to right side
@@ -66,14 +66,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `bankReward()` now records `goalMinutes` instead of raw accumulated minutes
   - Banked rewards list filters out already-used (cashed-in) entries
   - Same fix applied to both real-time progress (home page) and DB-backed progress (rewards page)
-- **Start/Stop buttons going stale / RPC timeouts**
+- **Start/Stop buttons going stale / RPC timeouts** — Buttons could stop responding due to a `navigator.locks` interaction during Supabase auth session refresh.
+  - Guard `onAuthStateChange` to register only once; skip Realtime rebuild if channel already exists (prevents dual `INITIAL_SESSION` + `SIGNED_IN` teardown)
+  - 15-second timeout on all RPC calls (`startTimer`, `stopTimer`, `triggerAutoPause`) with automatic session-recovery retry before failing
+  - `rpcWithTimeout` attempts `supabase.auth.refreshSession()` on first timeout, then retries the RPC once (often self-heals without a page refresh)
 
 ### Removed
 - **Bank button and Banked Rewards section** — The two-step Bank-then-Use flow added unnecessary friction. Cash In is now the sole mechanism for claiming earned rewards. The `banked_rewards` table remains in the schema for backward compatibility but is no longer exposed in the UI.
-- **Cash In description field** — The modal with an optional description field has been replaced with a simple "Cash in {name}?" confirmation dialog. The `cashed_at` timestamp is still recorded for history. — Buttons silently stop responding; traced to `navigator.locks` deadlock in Supabase auth token refresh
-  - Guard `onAuthStateChange` to register only once; skip Realtime rebuild if channel already exists (prevents dual `INITIAL_SESSION` + `SIGNED_IN` teardown)
-  - 15-second timeout on ALL RPC calls (`startTimer`, `stopTimer`, `triggerAutoPause`) with automatic session-recovery retry before failing
-  - `rpcWithTimeout` now attempts `supabase.auth.refreshSession()` on first timeout, then retries the RPC once — often self-heals without a page refresh
+- **Cash In description field** — Replaced the modal (optional description) with a simple "Cash in {name}?" confirmation. The `cashed_at` timestamp is still recorded.
 
 ### Added
 - **Activity button color by type** — PRD v2.4 Section 9.4.4
@@ -238,43 +238,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AutoPause countdown not decrementing for non-rewardable activities
 - Multi-activity-sequence test timing issues
 
-## Migration Notes
+## Historical context
 
-### From Blazor to Nuxt
+This app superseded an earlier desktop stack (.NET / Blazor). **Product behavior** for the current Nuxt app is defined in `docs/REARCHITECT/PRD for NUXT.md`. **Schema changes** ship as SQL under `supabase/migrations/` (apply in filename order; that folder is the source of truth, not a frozen list in this file).
 
-This project is a migration from the original .NET/Blazor/PostgreSQL/MudBlazor application to:
-
-- **Frontend**: Nuxt 4 (Vue 3.5, TypeScript)
-- **State Management**: Pinia + Composables
-- **Styling**: Tailwind CSS
-- **Backend**: Supabase (PostgreSQL)
-- **Real-time**: Supabase Realtime (WebSocket-based)
-- **Authentication**: Supabase Auth
-- **Deployment**: Vercel
-
-### Database Migrations
-
-Apply migrations in order:
-1. `001_user_profiles.sql` - User profiles and settings
-2. `002_activities.sql` - Core activity tables
-3. `003_rpc_functions.sql` - Database RPC functions
-4. `004_realtime.sql` - Supabase Realtime configuration
-5. `005_seed_test_user.sql` - Test user data
-6. `005_server_time.sql` - Server time function
-7. `006_fix_start_activity.sql` - Bug fix
-8. `008_auto_repeat_field.sql` - Auto-repeat for recurring activities
-9. `009_audio_on_auto_pause.sql` - Audio notification setting
-10. `010_rewards.sql` - Rewards and breaks system
-11. `011_get_email_by_username.sql` - Username-based login RPC function
-12. `012_include_non_rewardable_in_rewards.sql` - Include Non-Rewardable in Rewards setting
-13. `013_activity_estimates.sql` - Activity time estimates
-14. `014_average_work_goals.sql` - Average work day/week goals
-15. `015_activity_completion.sql` - Activity completion tracking
-16. `016_optional_break_duration.sql` - Optional break duration (nullable)
-17. `017_break_daily_reset.sql` - Break daily rollover reset
-18. `018_auto_pause_cumulative_base.sql` - AutoPause cumulative base tracking
-19. `019_fix_start_activity_persist_elapsed.sql` - Fix start activity elapsed time persistence
-20. `020_fix_autopause_elapsed_time.sql` - Fix autopause elapsed time calculation
-21. `021_break_baseline_seconds.sql` - Break baseline seconds field
-22. `022_reset_break_baseline.sql` - Reset break baseline on activation
-23. `023_reward_work_goal.sql` - Reward Work Goal columns (work_goal, work_goal_unit)
+Dated implementation logs: `docs/historical/session-notes/`. Migration-era rewards deltas: `docs/historical/migration/`.

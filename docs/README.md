@@ -33,7 +33,7 @@ The codebase currently runs on `nuxt ^3.20.2` and is configured with `future.com
    ```
 
 5. Open:
-   - `http://localhost:3000`
+   - `http://localhost:4000`
 
 ## Important Notes
 
@@ -68,17 +68,21 @@ NUXT_TimeReward/
 ## Recommended Reading
 
 - `./REARCHITECT/PRD for NUXT.md` - canonical standalone PRD for the extracted app
-- `./ENV-SETUP.md` - environment variables and local setup
+- `./ENV-SETUP.md` - environment variables, Supabase verification checklist, Vercel summary, integrations
+- `./EXTRACTION/extraction guide.checklist.md` - short extraction close-out checklist (includes latest automated `npm run build` note)
+- `./historical/migration/README.md` - where migration-era rewards docs live (not canonical PRD)
+- `./historical/session-notes/README.md` - archived dated session logs (optional reading)
 - `./MCP-SUPABASE-SETUP.md` - Supabase MCP and project setup notes
 - `./Manual Testing Plan.md` - manual verification flows
 - `./release-operations-runbook.md` - release/deploy operational notes
 - `./decisions/` - architecture and implementation decisions
 
-## Current Documentation Gaps
+## Current documentation notes
 
 - `docs/REARCHITECT/PRD for NUXT.md` is the canonical standalone PRD for this repo.
 - `docs/REARCHITECT/historical/PRD for NUXT.extraction-ready.md` and `docs/REARCHITECT/historical/PRD for NUXT.handoff-ready.md` are historical derivative/reference documents and not the primary source of truth.
-- Some historical planning and session-note documents remain in this repo for context and may be reorganized later.
+- Migration-era rewards comparison and Group B plan: `docs/historical/migration/` (see README there).
+- Archived session logs: `docs/historical/session-notes/` (may mention legacy PRD filenames; treat `PRD for NUXT.md` as authoritative for new work).
 
 ## Standalone Repo Goal
 

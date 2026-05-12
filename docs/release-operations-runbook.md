@@ -233,7 +233,7 @@ To seed demo data for testing (dev/test/demo environments only):
 ### Option 2: API Endpoint (Authenticated User)
 ```bash
 # Requires authenticated user session
-curl -X POST http://localhost:3000/api/admin/load-demo-data \
+curl -X POST http://localhost:4000/api/admin/load-demo-data \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN"
 ```
 

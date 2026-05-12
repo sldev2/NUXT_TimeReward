@@ -35,7 +35,7 @@ While reviewing the Manual Testing Plan for Rewards (Sections 10.1–10.8), we i
 
 ### Deltas Document
 
-Created `NUXT_TimeReward/docs/PRD - Nuxt Supabase Migration.Rewards Deltas March11.md` documenting all differences between the Parent project's reward system and the NUXT PRD.
+Created `docs/historical/migration/PRD - Nuxt Supabase Migration.Rewards Deltas March11.md` (since moved from `docs/` root) documenting all differences between the Parent project's reward system and the NUXT PRD.
 
 ### Group A vs Group B Decision
 
@@ -65,7 +65,7 @@ Updated the main PRD to v2.1:
 
 ### Group B Implementation Plan
 
-Created `NUXT_TimeReward/docs/Group B Rewards Implementation Plan.md` with detailed implementation guidance for each Group B feature:
+Created `docs/historical/migration/Group B Rewards Implementation Plan.md` (since moved from `docs/` root) with detailed implementation guidance for each Group B feature:
 - Schema migrations needed
 - UI changes per feature
 - Business logic references to Parent project code
@@ -109,8 +109,8 @@ Created `NUXT_TimeReward/docs/Group B Rewards Implementation Plan.md` with detai
 | `app/pages/register.vue` | Offline banner, disabled button when offline |
 | `app/pages/home.vue` | Tab labels: Semi-Wk→Semi-Weekly, Qtr→Quarterly |
 | `NUXT_TimeReward/docs/Manual Testing Plan.md` | Sections 8.4–8.11, 9.1–9.3 marked done; added 14.3, 14.4 |
-| `NUXT_TimeReward/docs/PRD - Nuxt Supabase Migration.Rewards Deltas March11.md` | New: analysis document |
-| `NUXT_TimeReward/docs/Group B Rewards Implementation Plan.md` | New: deferred implementation plan |
+| `docs/historical/migration/PRD - Nuxt Supabase Migration.Rewards Deltas March11.md` | New: analysis document (archived under historical/migration) |
+| `docs/historical/migration/Group B Rewards Implementation Plan.md` | New: deferred implementation plan (archived under historical/migration) |
 
 ---
 

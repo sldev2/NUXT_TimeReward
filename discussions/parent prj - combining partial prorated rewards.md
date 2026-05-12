@@ -115,7 +115,7 @@ The NUXT migration currently has none of this:
 | 10% lock threshold | `Locked` property | Missing |
 | `Progress` on `CashedInReward` | Tracks how much was cashed | Missing |
 
-These are all documented as deferred "Group B" features in `NUXT_TimeReward/docs/Group B Rewards Implementation Plan.md`.
+These are all documented as deferred "Group B" features in `NUXT_TimeReward/docs/historical/migration/Group B Rewards Implementation Plan.md`.
 
 ## Bottom Line
 
