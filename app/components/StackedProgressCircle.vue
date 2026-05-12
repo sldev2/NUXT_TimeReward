@@ -7,7 +7,7 @@
  * - Second circle (outer): Non-linear overflow when exceeding 100%
  * 
  * The overflow circle uses an asymptotic formula that never reaches 100%,
- * matching the parent project's StackedProgress.razor behavior.
+ * matching the legacy desktop StackedProgress UI behavior.
  */
 
 interface Props {
@@ -47,7 +47,7 @@ const sizeConfig = computed(() => {
 })
 
 // Calculate the overflow circle percentage using the asymptotic formula
-// This matches the parent project's GetOverTime property
+// Matches legacy GetOverTime-style over-cap display
 const overflowPercent = computed(() => {
   if (props.progress <= 100) {
     return 0

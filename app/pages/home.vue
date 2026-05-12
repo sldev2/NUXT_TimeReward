@@ -1165,7 +1165,7 @@ const weeklyProgressPercent = computed(() => {
             ]"
           >
             <div class="flex items-center gap-3">
-              <!-- Start/Stop button (far left, matching parent project layout) -->
+              <!-- Start/Stop button (far left; activity card control column) -->
               <button
                 class="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 flex-shrink-0"
                 :class="[

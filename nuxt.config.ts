@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   // Dev server config - localhost only (use '0.0.0.0' to allow LAN access e.g. from phone)
   devServer: {
     host: 'localhost',
-    port: 3000
+    port: 4000
   },
 
   // Nitro configuration - suppress noisy warnings from dependencies
@@ -80,7 +80,7 @@ export default defineNuxtConfig({
     
     // Client-side (public)
     public: {
-      appUrl: 'http://localhost:3000',
+      appUrl: 'http://localhost:4000',
       appEnv: 'development', // development, staging, production
       stripePublishableKey: '',
       turnstileSiteKey: '',
