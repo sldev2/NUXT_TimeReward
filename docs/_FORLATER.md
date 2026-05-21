@@ -49,3 +49,19 @@ If this project keeps email-based auth flows, configure Supabase Auth to use Res
 - More reliable confirmation, magic-link, and password-reset delivery
 - Avoidance of the built-in Supabase auth email quota
 - Cleaner separation between projects for key rotation and auditing
+
+---
+
+## Auth / Access Control
+
+### 5. Optional demo/test username gating
+
+A future feature may reintroduce environment-specific login restrictions for demo/test deployments. If added, this should be treated as a freshly specified feature rather than reconstructed from the parent repo.
+
+Questions to settle before implementation:
+
+- should the restriction apply to login only, registration only, or both
+- should it use an exact allowlist, substring match, regex, or email-domain rule
+- which environments should enforce it (`demo`, `test`, preview-only, local-only, etc.)
+- whether it should be controlled by environment variables or typed app config
+- what user-facing error message should be shown when access is blocked

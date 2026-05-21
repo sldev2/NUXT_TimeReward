@@ -6,10 +6,6 @@
   "installCommand": "npm install",
   "devCommand": "npm run dev",
   "regions": ["iad1"],
-  "env": {
-    "NUXT_PUBLIC_SUPABASE_URL": "@supabase-url",
-    "NUXT_PUBLIC_SUPABASE_KEY": "@supabase-anon-key"
-  },
   "headers": [
     {
       "source": "/(.*)",

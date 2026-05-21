@@ -59,7 +59,6 @@ export default defineEventHandler(async (event) => {
     // Get configured price IDs
     const priceIds = {
       monthly: config.stripePriceIdMonthly,
-      semiannual: config.stripePriceIdSemiannual,
       yearly: config.stripePriceIdYearly
     }
 
@@ -92,7 +91,7 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Sort by interval count (monthly first, then semiannual, then yearly)
+    // Sort by interval count (monthly first, then yearly)
     plans.sort((a, b) => a.intervalCount - b.intervalCount)
 
     // Update cache
@@ -121,7 +120,6 @@ export default defineEventHandler(async (event) => {
 function getPlanDisplayName(planKey: string): string {
   const names: Record<string, string> = {
     monthly: 'Monthly',
-    semiannual: '6 Months',
     yearly: 'Yearly'
   }
   return names[planKey] || planKey
@@ -130,7 +128,6 @@ function getPlanDisplayName(planKey: string): string {
 function getPlanDescription(planKey: string): string {
   const descriptions: Record<string, string> = {
     monthly: 'Perfect for trying out TimeReward Pro',
-    semiannual: 'Great savings for committed users',
     yearly: 'Best value - maximum savings'
   }
   return descriptions[planKey] || ''
@@ -147,7 +144,6 @@ function getPlanFeatures(planKey: string): string[] {
 
   const bonusFeatures: Record<string, string[]> = {
     monthly: [],
-    semiannual: ['Save vs monthly'],
     yearly: ['Best value', 'Priority support']
   }
 
@@ -169,17 +165,6 @@ function getStaticPlans(): PlanDetails[] {
       interval: 'month',
       intervalCount: 1,
       features: getPlanFeatures('monthly')
-    },
-    {
-      id: 'semiannual',
-      planKey: 'semiannual',
-      name: '6 Months',
-      description: 'Best value for committed users',
-      price: 49.99,
-      currency: 'USD',
-      interval: 'month',
-      intervalCount: 6,
-      features: getPlanFeatures('semiannual')
     },
     {
       id: 'yearly',
