@@ -6,7 +6,7 @@
  * 
  * Request Body:
  *   { 
- *     plan?: 'monthly' | 'semiannual' | 'yearly',  // Plan selection
+ *     plan?: 'monthly' | 'yearly',  // Plan selection
  *     priceId?: string                              // Or specific Stripe Price ID
  *   }
  * 
@@ -15,7 +15,6 @@
  * 
  * Available Plans:
  *   - monthly: 1-month subscription
- *   - semiannual: 6-month subscription
  *   - yearly: 12-month subscription
  */
 
@@ -25,7 +24,6 @@ import Stripe from 'stripe'
 // Plan name to config key mapping
 const PLAN_CONFIG_MAP: Record<string, string> = {
   'monthly': 'stripePriceIdMonthly',
-  'semiannual': 'stripePriceIdSemiannual',
   'yearly': 'stripePriceIdYearly'
 }
 
@@ -117,7 +115,7 @@ export default defineEventHandler(async (event) => {
       if (!priceId) {
         throw createError({
           statusCode: 400,
-          message: `Price ID not configured for plan: ${body.plan}. Set STRIPE_PRICE_ID_${body.plan.toUpperCase()} environment variable.`
+          message: `Price ID not configured for plan: ${body.plan}. Set the matching Stripe price ID environment variable.`
         })
       }
     } else {
@@ -128,7 +126,7 @@ export default defineEventHandler(async (event) => {
     if (!priceId) {
       throw createError({
         statusCode: 400,
-        message: 'No price ID configured. Set STRIPE_PRICE_ID_DEFAULT or specify a plan (monthly, semiannual, yearly).'
+        message: 'No price ID configured. Set a default Stripe price ID or specify a plan (monthly, yearly).'
       })
     }
 

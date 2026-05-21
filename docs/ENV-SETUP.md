@@ -61,7 +61,7 @@ Before calling extraction “done”, align what you use locally with deployment
 | Surface | Notes |
 |--------|--------|
 | `.env.example` | Primary list of variable names for this repo |
-| `vercel.json` | Declares `NUXT_PUBLIC_SUPABASE_URL` and `NUXT_PUBLIC_SUPABASE_KEY` for the client; server-side and `@nuxtjs/supabase` still expect the usual `SUPABASE_*` keys in the environment—set matching values in the Vercel project dashboard for any key the app reads at build or runtime |
+| `vercel.json` | Declares build/output/runtime deployment settings only; environment variables are now expected to be managed in the Vercel project dashboard rather than through legacy `@secret` mappings in this file |
 | `docs/release-operations-runbook.md` | Operational env table for releases |
 
 ## Post-extraction Supabase verification
@@ -84,6 +84,9 @@ Use the target Supabase project (not the parent repo’s project unless you inte
 - `installCommand`: `npm install`
 - `regions`: `iad1`
 - Security headers on all routes
+
+Current Vercel dashboard configuration for this project is summarized in
+[`docs/vercel environment inventory.md`](vercel%20environment%20inventory.md).
 
 Changing host means replacing or removing this file and re-documenting build/output/env in your new platform.
 
