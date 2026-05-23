@@ -10,6 +10,19 @@ const connectionState = useState<string>('connection-state', () => 'connecting')
 const probeOffline = ref(false)
 const runtimeConfig = useRuntimeConfig()
 
+const { data: registrationPolicy } = await useFetch('/api/auth/registration-policy')
+
+const TEST_REGISTRATION_ONLY_MESSAGE =
+  'Only test user registrations are currently being accepted.'
+
+function showRegistrationToast(message: string) {
+  const toast = useState<string>('connection-toast')
+  const toastType = useState<'success' | 'error' | 'warning'>('connection-toast-type')
+  toast.value = message
+  toastType.value = 'warning'
+  setTimeout(() => { toast.value = '' }, 5000)
+}
+
 const supabaseUrl = import.meta.client
   ? (runtimeConfig.public.supabaseUrl || runtimeConfig.public.supabase?.url)
   : ''
@@ -91,6 +104,15 @@ async function handleSubmit() {
     return
   }
 
+  const normalizedUsername = form.username.toLowerCase()
+  if (
+    registrationPolicy.value?.testRegistrationOnly
+    && !normalizedUsername.includes('boz23')
+  ) {
+    showRegistrationToast(TEST_REGISTRATION_ONLY_MESSAGE)
+    return
+  }
+
   await signUp({
     username: form.username,
     email: form.email,
@@ -98,6 +120,10 @@ async function handleSubmit() {
     firstName: form.firstName || form.username,
     lastName: form.lastName
   })
+
+  if (error.value === TEST_REGISTRATION_ONLY_MESSAGE) {
+    showRegistrationToast(TEST_REGISTRATION_ONLY_MESSAGE)
+  }
 }
 </script>
 
