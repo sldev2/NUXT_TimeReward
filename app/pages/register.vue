@@ -285,6 +285,21 @@ async function handleSubmit() {
             Sign in
           </NuxtLink>
         </p>
+
+        <p class="mt-4 text-center text-xs text-slate-500 leading-relaxed">
+          By creating an account, you agree to our
+          <NuxtLink to="/terms-of-service" class="text-blue-400 hover:text-blue-300 underline">
+            Terms of Service
+          </NuxtLink>
+          and
+          <NuxtLink to="/privacy-policy" class="text-blue-400 hover:text-blue-300 underline">
+            Privacy Policy
+          </NuxtLink>.
+        </p>
+
+        <div class="mt-4">
+          <LegalFooterLinks />
+        </div>
       </div>
     </div>
   </div>

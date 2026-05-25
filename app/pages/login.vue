@@ -223,6 +223,10 @@ async function sendMagicLink() {
           </NuxtLink>
         </p>
 
+        <div class="mt-6">
+          <LegalFooterLinks />
+        </div>
+
         <div
           v-if="showMagicLinkTest"
           class="mt-8 border-t border-slate-700/50 pt-6"
