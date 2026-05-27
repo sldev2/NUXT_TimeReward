@@ -10,7 +10,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+  <div class="relative min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center justify-center pb-16">
     <div class="text-center px-4">
       <!-- Hero -->
       <h1 class="text-5xl md:text-6xl font-bold mb-6">
@@ -78,6 +78,10 @@ watchEffect(() => {
           <p class="text-slate-400 text-sm">Keep tracking even without internet. Syncs when you're back online.</p>
         </div>
       </div>
+    </div>
+
+    <div class="absolute bottom-6 inset-x-0 px-4">
+      <LegalFooterLinks />
     </div>
   </div>
 </template>

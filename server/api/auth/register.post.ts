@@ -14,6 +14,7 @@
  */
 
 import { serverSupabaseClient, serverSupabaseServiceRole } from '#supabase/server'
+import { assertRegistrationAllowed } from '../../utils/boz23Registration'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -28,6 +29,8 @@ export default defineEventHandler(async (event) => {
   const normalizedEmail = email.trim().toLowerCase()
   const normalizedUsername = username.toLowerCase()
   const appUrl = (config.public.appUrl || getRequestURL(event).origin).replace(/\/$/, '')
+
+  assertRegistrationAllowed(normalizedUsername, config.boz23)
 
   if (!skipConfirmation) {
     const supabase = await serverSupabaseClient(event)
