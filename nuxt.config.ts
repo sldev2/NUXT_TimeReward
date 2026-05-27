@@ -77,6 +77,7 @@ export default defineNuxtConfig({
     turnstileSecretKey: '',
     skipEmailConfirmation: 'false', // Set to 'true' to auto-confirm new users (dev only)
     boz23: process.env.BOZ23 ?? process.env.NUXT_BOZ23 ?? '', // '1' = test registration only
+    underConstruction: process.env.UNDER_CONSTRUCTION ?? process.env.NUXT_UNDER_CONSTRUCTION ?? '', // '1' = show under-construction page
     
     // Client-side (public)
     public: {
