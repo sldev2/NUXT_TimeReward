@@ -3,6 +3,96 @@
 **Date:** 2026-05-28  
 **Sources:** `discussions/04_12 remaining extraction.md`, `discussions/05_27 dev directions advice.md`, `docs/PRD for Resend use.md`
 
+**Master TODO:** Work from the [Working checklist](#working-checklist-master-todo) below until extraction is closed and Resend PRD Phases 1–3 (GSD Milestone A) are done. Detail checklists: `discussions/04_12 remaining extraction.md`, `docs/PRD for Resend use.md`.
+
+**Checkbox legend:** Marker immediately after `[ ]` — `(human)` = you in browser/dashboard/UAT; `(ai)` = agent can draft or implement in repo; `(both)` = pair (e.g. AI drafts table or doc, you verify Vercel/Supabase). Elaboration sub-bullets can be added under any item as you work through it — ask to expand in this file.
+
+---
+
+## Working checklist (master TODO)
+
+Tick in order when practical; steps 1–3 and 4–6 may overlap once env policy (step 1) is written.
+
+### Layer 0 — Extraction closure
+
+#### Quick verify (likely done — confirm then tick)
+
+- [x] `(human)` §2: Vercel hosting decision still correct for this repo
+- [ ] `(both)` §2: `vercel.json` build command, output dir, region (`iad1`), security headers match deployed app
+- [ ] `(both)` §2: Env docs exist and are usable (`docs/vercel environment inventory.md`, `docs/ENV-SETUP.md`, `.env.example`)
+- [ ] `(both)` §3: Stripe routes exist and “not configured” behavior is acceptable
+- [ ] `(both)` §1 / §4 / §6: Historical docs, app language pass, no stray `junk/` — still true
+
+#### Open extraction work (blocks “Done when” in `04_12`)
+
+- [ ] `(both)` **1.** Refresh `discussions/04_12 remaining extraction.md` — tick §2 deployment sub-items that match `vercel.json` + inventory; note remaining gaps
+- [ ] `(both)` **2a.** Env reconciliation table: Vercel ↔ `.env.example` ↔ `ENV-SETUP.md` ↔ code usage
+- [ ] `(both)` **2b.** Label every listed var: **used | reserved | remove** (priority: `RESEND_*`, `EMAIL_AUTOMATION_*`, `NUXT_PUBLIC_LAUNCH_SOON`)
+- [ ] `(both)` **2c.** Update `.env.example` and `ENV-SETUP.md` from reconciliation results
+- [ ] `(both)` **3a.** Integration policy written (Stripe keep; Resend keep + PRD Phases 1–3; Turnstile optional/off; `EMAIL_AUTOMATION_*` reserved until Phase 4) — in `ENV-SETUP.md` and/or release runbook
+- [ ] `(both)` **3b.** Copy Resend one-liner into `04_12` §3 (see suggested one-liner under [§3 Resend](#3-external-integrations--resend-closes-the-ambiguity) below)
+- [ ] `(human)` **4.** `npm run dev` at repo root — clean startup, no blocking errors
+- [ ] `(human)` **5a.** Browser smoke: landing, login, register load
+- [ ] `(human)` **5b.** Browser smoke: `/home`, settings, rewards after login
+- [ ] `(human)` **5c.** Browser smoke: connection-state UI behaves normally
+- [ ] `(human)` **6a.** §8 Supabase matrix on **time-reward-test**: registration, username login, activities/timers, AutoPause
+- [ ] `(human)` **6b.** §8: offline queue replay after reconnect
+- [ ] `(human)` **6c.** §8: rewards and breaks CRUD; demo reset if enabled
+- [ ] `(human)` **6d.** §8: email path row deferred until [A1 acceptance](#a1--phase-1-auth-email-via-resend-smtp) — signup confirmation via Resend SMTP when skip flag false
+- [ ] `(both)` **7.** Playwright: `baseURL` and assumptions match app; fix stale refs in `Playwright/index.md` / config — *defer OK if not running E2E yet*
+
+#### Layer 0 — optional (not blocking extraction DONE)
+
+- [ ] `(both)` §4 docs: optional trim of parent/migration wording outside `docs/historical/`
+- [ ] `(both)` §5: consolidate setup / test / release docs
+
+### Layer 1 — GSD Milestone A (Resend PRD Phases 1–3)
+
+Start after or in parallel with Layer 0 steps **1–3** (env policy clear). Executable detail: `docs/PRD for Resend use.md`.
+
+#### A1 — Phase 1: Auth email via Resend SMTP
+
+- [ ] `(human)` Resend dashboard: domain/sender **Verified** for outbound (`support@myfocusrewards.com` / `send` subdomain)
+- [ ] `(human)` Supabase (test + prod as needed): Authentication → Email → Custom SMTP → Resend (`smtp.resend.com:587`, user `resend`, password = API key)
+- [ ] `(both)` Supabase redirect URLs documented and set (`/confirm` for prod, preview, local per PRD FR-1.2)
+- [ ] `(human)` Raise Supabase `rate_limit_email_sent` after custom SMTP active (see `docs/05_23 current auth email rate limit.md`)
+- [ ] `(both)` `.env.example` updated with `RESEND_SMTP_*` comments (PRD FR-1.5)
+- [ ] `(human)` **Acceptance:** Signup with `NUXT_SKIP_EMAIL_CONFIRMATION=false` sends from app sender, not Supabase default
+- [ ] `(human)` **Acceptance:** Resend dashboard shows auth send events
+- [ ] `(human)` **Acceptance:** Two registrations within minutes without hourly cap failure
+- [ ] `(human)` Tick **6d** (§8 email path) after A1 acceptance
+
+#### A2 — Phase 2: Resend verification API + UI
+
+- [ ] `(ai)` `POST /api/auth/resend-verification` (Valibot, generic success, no enumeration)
+- [ ] `(ai)` Register/login UI: resend verification action + cooldown UX
+- [ ] `(ai)` Rate limit: `auth-resend-verification` — 5/hr/IP, 429 message
+- [ ] `(human)` **Acceptance:** Unconfirmed user can request another verification email
+- [ ] `(human)` **Acceptance:** Rate limit returns 429 with friendly message
+- [ ] `(human)` **Acceptance:** Works on localhost with Supabase SMTP configured
+- [ ] `(both)` Close Manual Testing Plan §3.4 deferred email tests
+
+#### A3 — Phase 3: Resend API foundation
+
+- [ ] `(ai)` Add `resend` npm dependency (align major with PopulistsUnite)
+- [ ] `(ai)` `runtimeConfig` wiring for `resendApiKey` + `email.*` per PRD §6.4
+- [ ] `(ai)` `server/services/EmailDeliveryService.ts` (or equivalent thin wrapper)
+- [ ] `(both)` **Acceptance:** Test send route or health check sends when key set; graceful when missing
+- [ ] `(human)` Merge Milestone A to `test` → `main` before timing/sync work
+
+### Housekeeping and extraction DONE
+
+- [ ] `(both)` `docs/README.md`: Resend PRD + compare doc in recommended reading
+- [ ] `(both)` `docs/REARCHITECT/PRD for NUXT.md`: §6.6 pointer — email delivery open → link to Resend PRD
+- [ ] `(both)` `docs/_FORLATER.md`: item 4 superseded by Resend PRD
+- [ ] `(both)` `discussions/04_12 remaining extraction.md`: all “Done when” boxes ticked; pointers to `05_27` / Resend PRD
+- [ ] `(both)` `docs/EXTRACTION/extraction guide.checklist.md` synced with closed `04_12`
+- [ ] `(both)` `docs/README.md` one-liner: *Extraction closed YYYY-MM-DD; next: sync re-engineering (TBD)*
+
+### After scope (do not block Resend A1–A3)
+
+*Layer 2 — timing/sync re-engineering (GSD Milestone B); Layer 3 — Resend Phases 4–5; optional Playwright/doc trim.*
+
 ---
 
 ## Two different “finish lines”
@@ -141,21 +231,11 @@ Resend queue / forgot-password when product needs them — not extraction, not s
 
 ---
 
-## Single “master sequence” (if you want one ordered list)
+## Single “master sequence” (summary)
 
-```
-1. [Extraction] Env reconciliation + integration policy doc     ← closes 04_12 §2–§3
-2. [Extraction] npm run dev + smoke + §8 Supabase matrix        ← closes 04_12 §7–§8
-3. [GSD A1]     Supabase → Resend SMTP + verify signup email    ← Resend PRD Phase 1
-4. [GSD A2]     resend-verification API + UI                    ← Resend PRD Phase 2
-5. [GSD A3]     resend package + EmailDeliveryService           ← Resend PRD Phase 3
-6. [Housekeeping] 05_27 light links: README, canonical PRD §6.6, _FORLATER
-7. [Extraction]  Update 04_12 checkboxes → mark extraction DONE
-8. [GSD B]      Timing / sync re-engineering
-9. [Optional]   Playwright §9, doc simplification §5, Resend Phases 4–5
-```
+Same order as [Working checklist](#working-checklist-master-todo): **1–2** = Layer 0 open items + verify; **3–5** = A1–A3; **6–7** = housekeeping + mark extraction DONE; **8–9** = after scope (sync, optional).
 
-Steps 1–2 and 3–5 can overlap slightly once env policy is written (step 1).
+Steps 1–2 and 3–5 can overlap once env policy (checklist items **2a–3b**) is written.
 
 ---
 
@@ -184,4 +264,4 @@ Do **not** merge extraction into Resend PRD or canonical PRD. Instead:
 4. **Use GSD Milestone B only after** extraction baseline (§8) and Resend are merged — so you have before/after tests for the timing work.
 5. **Refresh `04_12`** — several §2 items are effectively done but unchecked; updating the file avoids double work.
 
-**Optional follow-up:** Update `04_12 remaining extraction.md` with this integrated sequence, refreshed checkboxes, and explicit pointers to `05_27` and the Resend PRD.
+**Optional follow-up:** ~~Update `04_12` with integrated sequence~~ — use this file’s [Working checklist](#working-checklist-master-todo) as master; refresh `04_12` when closing extraction (housekeeping section).
