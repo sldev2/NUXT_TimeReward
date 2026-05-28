@@ -101,3 +101,59 @@ Only if the re-engineering plan includes **replacing Supabase Auth** or **userna
 - **Sequencing:** implement Resend (at least Phases 1–3) **before** the timing/sync re-engineering — low coupling, high leverage, PopulistsUnite de-risks it. Use GSD for Resend as its own phase, then a separate GSD milestone for sync/offline.
 
 **Optional follow-up:** light docs integration (README + canonical PRD pointer + `_FORLATER` update) in a small docs-only commit.
+
+---
+
+## Clarification addendum — GSD scope for Resend Phases 1–3
+
+**Added:** 2026-05-27  
+**Question:** Does “Use GSD for Resend as its own phase” mean GSD for Phases 1–3, or only for phases beyond Phase 3?
+
+### Short answer
+
+**Use GSD for the Resend build-out as a whole (Phases 1–3 as the minimum scope), not only for Phase 4+ and not mixed into the timing/sync re-engineering milestone.**
+
+The “Bottom line” above bundles two separate ideas:
+
+| Idea | Meaning |
+|------|--------|
+| **Sequencing** | Do Resend (at least Phases 1–3) **before** the timing/sync re-engineering. |
+| **GSD structure** | Treat Resend as **its own GSD milestone/phase(s)**; treat sync/offline as a **separate** one later. |
+
+So: **GSD for Resend Phases 1–3** — yes, that’s the intent. **GSD only after Phase 3** — no, that’s not the intent.
+
+### How that maps to PRD phases in practice
+
+Not every sub-phase needs the same amount of GSD ceremony:
+
+| Phase | What it is | GSD fit |
+|-------|------------|--------|
+| **1 — Supabase → Resend SMTP** | Mostly **human** work in Supabase + Resend dashboards; small doc/env updates in repo | Light GSD (plan + checklist + verify); little or no agent execution |
+| **2 — Resend verification API + UI** | Real code (`/api/auth/resend-verification`, UI, rate limits) | **Good GSD execute phase** |
+| **3 — `resend` package + send helper** | Server service, runtime config wiring | **Good GSD execute phase** |
+| **4–5 — Queue, forgot-password** | Later, when product needs them | Separate GSD phase(s) when ready |
+
+One reasonable GSD layout:
+
+```
+Milestone A: Resend integration
+  Phase A1: SMTP + docs + manual verify          (PRD Phase 1)
+  Phase A2: resend-verification + UI           (PRD Phase 2)
+  Phase A3: EmailDeliveryService foundation      (PRD Phase 3)
+
+Milestone B: Timing / sync re-engineering        (later, separate)
+
+Milestone C: Resend queue + password reset       (PRD Phases 4–5, optional, when needed)
+```
+
+### What this is **not** saying
+
+- **Not:** “Implement Phases 1–3 by hand without GSD, then turn GSD on for Phase 4+.”
+- **Not:** “Run Resend and sync re-engineering in one GSD milestone.”
+- **Not:** “You must use GSD for Phase 1 dashboard work” — that part is inherently manual.
+
+### Practical recommendation
+
+If adopting GSD now, **start GSD with the Resend milestone** and include **Phases 1–3** in it. Phase 1 is mostly human verification; Phases 2–3 are where GSD execution pays off. Defer Phase 4–5 until there are concrete email triggers.
+
+**Bottom line (clarified):** Use GSD for **Resend Phases 1–3 as one milestone** (with Phase 1 weighted toward human steps). Keep **sync/offline re-engineering as the next milestone**. Phase 4+ is a **later optional** Resend milestone, not a prerequisite for starting GSD on email.

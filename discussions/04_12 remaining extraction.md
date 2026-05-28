@@ -38,7 +38,7 @@ This note captures the extraction work that still appears open after the recent 
 - [x ] Decide: stay on Vercel 
 
 **If deploying (verify and document):**
-
+  [ S K I P ]
 - [ ] Build command
 - [ ] Output directory
 - [ ] Environment-variable mapping (platform ↔ `docs/ENV-SETUP.md` ↔ `.env.example`)
