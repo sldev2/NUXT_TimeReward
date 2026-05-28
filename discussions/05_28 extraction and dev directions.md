@@ -18,8 +18,9 @@ Tick in order when practical; steps 1–3 and 4–6 may overlap once env policy 
 #### Quick verify (likely done — confirm then tick)
 
 - [x] `(human)` §2: Vercel hosting decision still correct for this repo
-- [ ] `(both)` §2: `vercel.json` build command, output dir, region (`iad1`), security headers match deployed app
-- [ ] `(both)` §2: Env docs exist and are usable (`docs/vercel environment inventory.md`, `docs/ENV-SETUP.md`, `.env.example`)
+- [x] `(both)` §2: `vercel.json` build command, output dir, region (`iad1`), security headers match deployed app
+- [X] `(both)` §2: Env docs exist and are usable (`docs/vercel environment inventory.md`, `docs/ENV-SETUP.md`, `.env.example`)
+- TODO  prod and demo
 - [ ] `(both)` §3: Stripe routes exist and “not configured” behavior is acceptable
 - [ ] `(both)` §1 / §4 / §6: Historical docs, app language pass, no stray `junk/` — still true
 
