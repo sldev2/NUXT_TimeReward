@@ -1,5 +1,7 @@
 # Session Notes - 2026-05-28
 
+> **Latest handoff:** Stripe quarterly + subscription UI — **`SESSION_NOTES_2026-05-30.md`**
+
 ## Summary
 
 This session focused on **Resend/email strategy**, **PRD and program sequencing** (Resend before timing/sync re-engineering), **integrating remaining extraction work** with that plan, and **branch merges**. No new application code beyond prior sessions (`UNDER_CONSTRUCTION`, legal pages, BOZ23).
@@ -34,14 +36,16 @@ On **`develop`**, then merged to **`main`**:
 - **Sequence:** Resend (Phases 1–3) **before** GSD timing/sync re-engineering — low coupling; PopulistsUnite as reference.
 - **GSD:** Milestone A = Resend Phases 1–3; Milestone B = sync/offline; Milestone C = Resend Phases 4–5 optional.
 
-### Clarification addendum (2026-05-27, in file — **not yet committed**)
+### Clarification addendum (2026-05-27)
 
 - GSD applies to **Resend Phases 1–3 as one milestone**, not only Phase 4+.
 - Phase 1 = mostly human (Supabase/Resend dashboards); Phases 2–3 = good GSD execute targets.
 
-### `05_28 extraction and dev directions.md` (**uncommitted**)
+### `05_28 extraction and dev directions.md`
 
-Integrated roadmap:
+Integrated roadmap (committed on `develop` / `main` doc chain — see git history around `3f4a7de` / discussion commits).
+
+**Superseded handoff for Stripe/quarterly work:** see **`SESSION_NOTES_2026-05-30.md`**.
 
 ```
 Layer 0 — Extraction closure (finish 04_12)
@@ -74,7 +78,7 @@ Checklist **stale since 2026-05-10** but still the closure tracker.
 - §8 Supabase behavior matrix (+ email path when Resend Phase 1 done)
 - §9 Playwright config/docs
 
-### Local edit (**uncommitted**)
+### Local edit
 
 User added **`[ S K I P ]`** under §2 deployment “If deploying (verify and document)” — intent: skip or defer that subsection; confirm in next session.
 
@@ -102,30 +106,16 @@ User added **`[ S K I P ]`** under §2 deployment “If deploying (verify and do
 
 ---
 
-## Git state at session end
+## Git state at session end (2026-05-28 snapshot — see 2026-05-30 for current)
 
-- **Branch:** `main` (up to date with `origin/main` for **committed** work)
-- **Uncommitted:**
-  - `discussions/05_28 extraction and dev directions.md` (new)
-  - `discussions/05_27 dev directions advice.md` (clarification addendum)
-  - `discussions/04_12 remaining extraction.md` (`[ S K I P ]` marker)
+- **Branch at time:** `main` / doc work on `develop`
+- **Later (2026-05-30):** Quarterly Stripe + subscription UI on **`test`** — full git state in **`SESSION_NOTES_2026-05-30.md`**
 
 ---
 
-## Practical restart (next chat)
+## Practical restart (superseded)
 
-1. **Commit** uncommitted discussion docs (or discard `[ S K I P ]` if accidental).
-2. **Layer 0 — Extraction closure** per `05_28 extraction and dev directions.md`:
-   - Env reconciliation table (Vercel ↔ `.env.example` ↔ code)
-   - Integration policy in `ENV-SETUP.md` or runbook (Stripe keep, Resend keep per PRD, Turnstile optional/off)
-   - §7 smoke + §8 Supabase matrix on `time-reward-test`
-3. **GSD Milestone A — Resend** per `docs/PRD for Resend use.md`:
-   - **A1:** Supabase → Resend SMTP (human) + verify signup email
-   - **A2:** `/api/auth/resend-verification` + UI
-   - **A3:** `resend` package + `EmailDeliveryService` foundation
-4. **Optional housekeeping:** README + canonical PRD §6.6 pointer + `_FORLATER.md` update (from `05_27`).
-5. **Later:** GSD Milestone B timing/sync re-engineering — **after** extraction baseline + Resend A1–A2 merged.
-6. **Production:** `UNDER_CONSTRUCTION=1` on Vercel Production only when ready to show coming-soon on `myfocusrewards.com`.
+See **`SESSION_NOTES_2026-05-30.md`** → “Practical restart (next chat)”.
 
 ---
 
