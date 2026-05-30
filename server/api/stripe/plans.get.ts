@@ -366,7 +366,7 @@ function getStaticPlans(): PlanDetails[] {
 
       interval: 'month',
 
-      intervalCount: 3,
+      intervalCount: 4,
 
       features: getPlanFeatures('quarterly')
 

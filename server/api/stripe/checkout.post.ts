@@ -15,7 +15,7 @@
  * 
  * Available Plans:
  *   - monthly: 1-month subscription
- *   - quarterly: 3-month subscription
+ *   - quarterly: 4-month subscription
  *   - yearly: 12-month subscription
  */
 
