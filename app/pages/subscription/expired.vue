@@ -68,14 +68,39 @@ function formatPrice(plan: Plan): string {
   return formatter.format(plan.price)
 }
 
+function getBillingMonths(plan: Plan): number {
+  if (plan.interval === 'year') {
+    return 12 * (plan.intervalCount || 1)
+  }
+  if (plan.interval === 'month') {
+    return plan.intervalCount || 1
+  }
+  return plan.intervalCount || 1
+}
+
 function getPricePerMonth(plan: Plan): string {
-  const months = plan.interval === 'year' ? 12 : plan.intervalCount
-  const perMonth = plan.price / months
+  const perMonth = plan.price / getBillingMonths(plan)
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: plan.currency
   })
   return formatter.format(perMonth)
+}
+
+function getBillingPeriodLabel(plan: Plan): string {
+  if (plan.planKey === 'monthly') {
+    return 'per month'
+  }
+  if (plan.planKey === 'quarterly') {
+    return 'billed every 3 months'
+  }
+  if (plan.planKey === 'yearly') {
+    return `${getPricePerMonth(plan)}/month`
+  }
+  if (plan.intervalCount > 1 || plan.interval === 'year') {
+    return `${getPricePerMonth(plan)}/month`
+  }
+  return 'per month'
 }
 
 function isRecommended(plan: Plan): boolean {
@@ -148,11 +173,14 @@ function isRecommended(plan: Plan): boolean {
               {{ formatPrice(plan) }}
             </div>
             <div class="text-sm text-slate-400 mt-1">
-              <span v-if="plan.intervalCount > 1 || plan.interval === 'year'">
+              <span v-if="plan.planKey === 'yearly'">
                 {{ getPricePerMonth(plan) }}/month
               </span>
+              <span v-else-if="plan.planKey === 'quarterly'">
+                {{ getPricePerMonth(plan) }}/month · {{ getBillingPeriodLabel(plan) }}
+              </span>
               <span v-else>
-                per month
+                {{ getBillingPeriodLabel(plan) }}
               </span>
             </div>
           </div>

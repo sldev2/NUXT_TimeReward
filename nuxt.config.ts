@@ -71,6 +71,7 @@ export default defineNuxtConfig({
     stripeWebhookSecret: '',
     // Stripe subscription price IDs
     stripePriceIdMonthly: '',    // 1-month plan
+    stripePriceIdQuarterly: '',  // 3-month plan
     stripePriceIdYearly: '',     // 12-month plan
     stripePriceIdDefault: '',    // Fallback default
     resendApiKey: '',

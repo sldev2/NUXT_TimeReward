@@ -6,7 +6,7 @@
  * 
  * Request Body:
  *   { 
- *     plan?: 'monthly' | 'yearly',  // Plan selection
+ *     plan?: 'monthly' | 'quarterly' | 'yearly',  // Plan selection
  *     priceId?: string                              // Or specific Stripe Price ID
  *   }
  * 
@@ -15,6 +15,7 @@
  * 
  * Available Plans:
  *   - monthly: 1-month subscription
+ *   - quarterly: 3-month subscription
  *   - yearly: 12-month subscription
  */
 
@@ -23,8 +24,9 @@ import Stripe from 'stripe'
 
 // Plan name to config key mapping
 const PLAN_CONFIG_MAP: Record<string, string> = {
-  'monthly': 'stripePriceIdMonthly',
-  'yearly': 'stripePriceIdYearly'
+  monthly: 'stripePriceIdMonthly',
+  quarterly: 'stripePriceIdQuarterly',
+  yearly: 'stripePriceIdYearly'
 }
 
 export default defineEventHandler(async (event) => {
@@ -126,7 +128,7 @@ export default defineEventHandler(async (event) => {
     if (!priceId) {
       throw createError({
         statusCode: 400,
-        message: 'No price ID configured. Set a default Stripe price ID or specify a plan (monthly, yearly).'
+        message: 'No price ID configured. Set a default Stripe price ID or specify a plan (monthly, quarterly, yearly).'
       })
     }
 
