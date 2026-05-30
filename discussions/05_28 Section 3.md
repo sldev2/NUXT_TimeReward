@@ -64,6 +64,60 @@ Your Vercel inventory lists `NUXT_STRIPE_*` only on **Preview → branch `test`*
 
 If that works on test, **configured path is good.**
 
+#### How to see `GET /api/stripe/plans` in Network (you do **not** type “GET” anywhere)
+
+DevTools **Network** is a **log of HTTP requests the browser already made**. You don’t enter `GET /api/stripe/plans` into the tab — something on the site has to **trigger** that request first.
+
+**Why you might see nothing**
+
+| Cause | Fix |
+|-------|-----|
+| You’re on `/`, `/login`, `/home`, etc. | That page never calls the plans API. |
+| DevTools opened **after** the page loaded | Reload the page with Network open, or enable **Preserve log**. |
+| Filter too narrow | Clear the filter box, or type `plans` or `stripe`. |
+| Wrong host | Use **`test.myfocusrewards.com`** (Preview / `test` branch), not prod if prod has no Stripe keys. |
+| `UNDER_CONSTRUCTION=1` on prod | Production may show the coming-soon page and block API; use **test** for this check. |
+
+**Option A — Trigger via the app (best match for the doc)**
+
+1. Open **`https://test.myfocusrewards.com`** (or local `http://localhost:4000`).
+2. **Log in** (plans check doesn’t require subscription, but `/subscription/expired` requires auth).
+3. Open DevTools → **Network** → enable **Preserve log** (optional).
+4. In the address bar go to: **`/subscription/expired`**  
+   Full URL: `https://test.myfocusrewards.com/subscription/expired`
+5. In Network, find a row named **`plans`** (URL ends with `/api/stripe/plans`).
+6. Click it → **Headers**: status **200** → **Response** (or Preview): JSON with `stripeConfigured: true` and a `plans` array.
+
+That request comes from `subscription/expired.vue`, which runs `useFetch('/api/stripe/plans')` on page load.
+
+**Option B — Open the API URL directly (simplest)**
+
+Paste in the browser address bar:
+
+```text
+https://test.myfocusrewards.com/api/stripe/plans
+```
+
+You should get **raw JSON** in the tab (no HTML). Check:
+
+- `stripeConfigured: true` (on test with Stripe env vars set)
+- `plans`: array with real prices, not only static placeholders
+
+This still shows up in Network as one `plans` request when you use Option B with DevTools already open.
+
+**Option C — Local**
+
+```text
+http://localhost:4000/api/stripe/plans
+```
+
+With `NUXT_STRIPE_SECRET_KEY` in `.env` → expect `stripeConfigured: true`. Without it → `stripeConfigured: false` (still **200**).
+
+**What “GET” means in the doc**
+
+`GET /api/stripe/plans` is shorthand for: an HTTP **GET** request to that path. In Network you look for the **Name** `plans` or the **URL** containing `/api/stripe/plans`, not a field where you type the method.
+
+
 ### B. **Main / Production** — Stripe may be *intentionally* unset
 
 Inventory shows **no** `NUXT_STRIPE_*` on Production-only vars. So production may always hit “not configured” for checkout until you add keys.
