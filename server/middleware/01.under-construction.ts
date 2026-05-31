@@ -5,6 +5,7 @@ import { isUnderConstruction, underConstructionHtml } from '../utils/underConstr
 const ALLOWED_PATH_PREFIXES = [
   '/api/stripe/webhook',
   '/api/site-status',
+  '/api/keepalive',
 ]
 
 export default defineEventHandler((event: H3Event) => {

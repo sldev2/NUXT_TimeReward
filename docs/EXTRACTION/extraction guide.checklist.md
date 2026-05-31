@@ -5,6 +5,10 @@ Use this as the short execution checklist for extracting `NUXT_TimeReward` into 
 
 This does **not** replace `junk/extraction guide.md`; it is the condensed version.
 
+## Environment scope
+
+Extraction sign-off covers **development** (local `.env`) and **test** (Vercel Preview branch `test` + Supabase `time-reward-test`) only. **Production env is deferred** until launch. Env **values** may live in a spreadsheet; repo docs describe names and usage.
+
 ## Before copy
 - Decide whether the new repo will use fresh git history or filtered history.
 - Decide whether the extracted app will use a new Supabase project or an existing one.
@@ -26,13 +30,14 @@ npm run dev
 ## Environment and secrets
 - Create a fresh `.env` in the extracted app.
 - Do **not** blindly reuse the old real `.env`.
-- Re-enter secrets manually as needed.
-- Reconcile env naming across:
+- Re-enter secrets manually as needed (spreadsheet OK as source of truth for values).
+- Reconcile env naming across **dev + test**:
   - `.env.example`
   - `docs/ENV-SETUP.md`
   - `vercel.json`
-- Then verify your actual local dev env file (`.env` or `.env.development`) matches that contract.
-- Recreate deployment-platform secrets in the new project.
+  - Vercel Preview branch **`test`** (when deployed)
+- Then verify your local dev env file (`.env`) matches that contract.
+- Recreate **test** deployment secrets in Vercel; prod secrets at launch.
 
 ## Supabase
 - Point the app at the correct Supabase project.
@@ -66,10 +71,10 @@ npm run dev
 
 ## Deployment review
 - Decide whether the standalone app will stay on Vercel or move elsewhere.
-- Verify:
+- Verify for **dev + test** (not prod sign-off):
   - build command
   - output directory
-  - env mappings
+  - env mappings (local `.env` + Vercel **`test`**)
   - region
   - security headers
 
@@ -112,8 +117,8 @@ npm run build
 ## Done when
 - The app runs without depending on the parent repo.
 - Core docs no longer depend on parent-repo references.
-- Supabase is connected and migrated.
+- **`time-reward-test`** Supabase is connected and migrated.
 - Auth callback behavior is resolved.
-- Deployment/env config is coherent.
+- Deployment/env config is coherent for **development and test** (prod deferred).
 - The canonical PRD is in the extracted repo.
-- Another developer can set up the app using only the extracted repo.
+- Another developer can set up the app using only the extracted repo (local + test preview).

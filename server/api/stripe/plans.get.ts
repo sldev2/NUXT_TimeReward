@@ -338,7 +338,7 @@ function getStaticPlans(): PlanDetails[] {
 
       description: 'Perfect for trying out TimeReward Pro',
 
-      price: 9.99,
+      price: 10.00,
 
       currency: 'USD',
 
@@ -360,7 +360,7 @@ function getStaticPlans(): PlanDetails[] {
 
       description: 'Balanced commitment with flexible billing',
 
-      price: 24.99,
+      price: 34.00,
 
       currency: 'USD',
 
@@ -382,7 +382,7 @@ function getStaticPlans(): PlanDetails[] {
 
       description: 'Maximum savings for long-term success',
 
-      price: 89.99,
+      price: 90.00,
 
       currency: 'USD',
 

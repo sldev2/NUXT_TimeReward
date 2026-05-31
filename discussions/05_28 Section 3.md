@@ -3,6 +3,8 @@
 **Date:** 2026-05-28  
 **Related:** `discussions/05_28 extraction and dev directions.md` — checklist item `(both)` §3: Stripe routes exist and “not configured” behavior is acceptable
 
+**Environment scope:** Verify Stripe on **development** (local) and **test** (`test.myfocusrewards.com` / Vercel Preview branch `test`) only. **Production is not an extraction gate** — see [Out of scope](#out-of-scope--production-at-launch) below.
+
 ---
 
 ## What you’re verifying (two parts)
@@ -35,12 +37,12 @@ That satisfies **“routes exist.”**
 
 Nuxt maps env → `runtimeConfig.stripeSecretKey` from **`NUXT_STRIPE_SECRET_KEY`** (see `.env.example`).
 
-| Route | If secret key missing |
-|-------|------------------------|
-| **`GET /api/stripe/plans`** | **Graceful** — HTTP 200, static placeholder plans, `stripeConfigured: false` |
-| **`POST /api/stripe/checkout`** | **Hard fail** — HTTP 500, message: `Stripe is not configured...` |
-| **`POST /api/stripe/update-subscription`** | **Hard fail** — HTTP 500, `Stripe is not configured` |
-| **`POST /api/stripe/webhook`** | **Hard fail** — HTTP 500, `Stripe webhook is not configured` |
+| Route | If secret key missing | If secret key **present** (normal dev/test) |
+|-------|------------------------|---------------------------------------------|
+| **`GET /api/stripe/plans`** | **Graceful** — HTTP 200, static placeholder plans, `stripeConfigured: false` | HTTP 200, live or cached plans, `stripeConfigured: true` — **no login required** |
+| **`POST /api/stripe/checkout`** | **Hard fail** — HTTP 500, `Stripe is not configured...` — **no login required** | **Auth required** — HTTP **401** without session cookie; checkout session only when logged in |
+| **`POST /api/stripe/update-subscription`** | **Hard fail** — HTTP 500, `Stripe is not configured` | Auth required (same pattern as checkout) |
+| **`POST /api/stripe/webhook`** | **Hard fail** — HTTP 500, `Stripe webhook is not configured` | N/A (Stripe signature, not user session) |
 
 So “acceptable” for extraction means you’re OK with:
 
@@ -55,42 +57,53 @@ Optional note from `discussions/05_19 stripe interface status.md`: cancel URL ma
 
 ### A. **Test** (`test` branch / `test.myfocusrewards.com`) — Stripe *should* be configured
 
-Your Vercel inventory lists `NUXT_STRIPE_*` only on **Preview → branch `test`**, not Production.
+Your Vercel **`test`** preview should have `NUXT_STRIPE_*` set (track values in your spreadsheet).
 
 1. Log in on test (or open subscription flow if you can reach `/subscription/expired`).
-2. In browser DevTools → **Network**:
-   - `GET /api/stripe/plans` → **200**, `stripeConfigured: true`, real-ish prices (not only placeholders).
-3. Optional: click upgrade → should redirect to Stripe Checkout (not “Stripe is not configured”).
+2. **Verify the API** with **Option B** below (recommended) — open `/api/stripe/plans` directly and confirm **200**, `stripeConfigured: true`, and live prices.
+3. Optional: on `/subscription/expired`, three plan cards loading confirms the page wiring (but **not** by itself that Stripe is configured — placeholders also show three cards).
+4. Optional: click **Subscribe Now** → should redirect to Stripe Checkout (not “Stripe is not configured”).
 
-If that works on test, **configured path is good.**
+If Option B works on test, **configured path is good.**
 
 #### How to see `GET /api/stripe/plans` in Network (you do **not** type “GET” anywhere)
 
-DevTools **Network** is a **log of HTTP requests the browser already made**. You don’t enter `GET /api/stripe/plans` into the tab — something on the site has to **trigger** that request first.
+DevTools **Network** logs **browser-initiated** HTTP requests only. You don’t enter `GET /api/stripe/plans` into the tab — something has to trigger that request from the browser.
 
-**Why you might see nothing**
+**Recommended verification: Option B** — open `/api/stripe/plans` in the address bar. That always produces one visible Network row (if DevTools is open) and shows the raw JSON you need (`stripeConfigured`, live vs static prices).
+
+**SSR note (why `/subscription/expired` often shows no `plans` row)**
+
+`subscription/expired.vue` uses `await useFetch('/api/stripe/plans')`. On a **full page load** (address bar, refresh, external link), Nuxt runs that fetch **on the server during SSR**. The plans JSON is embedded in the HTML payload and hydrated in the browser — the API is called, but **not from the browser**, so Network may show only the **document** request for `/subscription/expired`, with **no** separate row named `plans`.
+
+| Load type | Network shows `/api/stripe/plans`? |
+|-----------|--------------------------------------|
+| Address bar / refresh on `/subscription/expired` | Usually **no** (SSR) |
+| In-app navigation (e.g. `/home` → link to `/subscription/expired`) | Often **yes** (client fetch) |
+| Open `/api/stripe/plans` directly (Option B) | **Yes** |
+
+**Why you might see nothing (when you expected a row)**
 
 | Cause | Fix |
 |-------|-----|
+| Full page load of `/subscription/expired` (SSR) | Use **Option B**, or navigate from another in-app page with Network open (Option A). |
 | You’re on `/`, `/login`, `/home`, etc. | That page never calls the plans API. |
-| DevTools opened **after** the page loaded | Reload the page with Network open, or enable **Preserve log**. |
-| Filter too narrow | Clear the filter box, or type `plans` or `stripe`. |
-| Wrong host | Use **`test.myfocusrewards.com`** (Preview / `test` branch), not prod if prod has no Stripe keys. |
-| `UNDER_CONSTRUCTION=1` on prod | Production may show the coming-soon page and block API; use **test** for this check. |
+| DevTools opened **after** the request | Reload with Network open, enable **Preserve log**, or use Option B. |
+| Filter too narrow | Clear the filter, or type `plans` or `stripe`; try **Fetch/XHR** or **All**. |
+| Wrong host | Use **`test.myfocusrewards.com`** or local **`localhost:4000`** for extraction checks |
 
-**Option A — Trigger via the app (best match for the doc)**
+**Option A — See `plans` in Network via in-app navigation (optional)**
+
+Use this only if you want to confirm a **browser-initiated** fetch from the subscription page — not for verifying Stripe config (use Option B for that).
 
 1. Open **`https://test.myfocusrewards.com`** (or local `http://localhost:4000`).
-2. **Log in** (plans check doesn’t require subscription, but `/subscription/expired` requires auth).
-3. Open DevTools → **Network** → enable **Preserve log** (optional).
-4. In the address bar go to: **`/subscription/expired`**  
-   Full URL: `https://test.myfocusrewards.com/subscription/expired`
-5. In Network, find a row named **`plans`** (URL ends with `/api/stripe/plans`).
-6. Click it → **Headers**: status **200** → **Response** (or Preview): JSON with `stripeConfigured: true` and a `plans` array.
+2. **Log in** (`/subscription/expired` requires auth).
+3. Open DevTools → **Network** → **Fetch/XHR** (or All) → enable **Preserve log** (optional).
+4. From an **in-app link or router navigation**, go to **`/subscription/expired`** — do **not** paste the URL in the address bar or refresh (those use SSR and usually hide the API row).
+5. Look for a row named **`plans`** (URL ends with `/api/stripe/plans`).
+6. Click it → **Headers**: status **200** → **Response**: JSON with `plans` (and usually `stripeConfigured: true` on test).
 
-That request comes from `subscription/expired.vue`, which runs `useFetch('/api/stripe/plans')` on page load.
-
-**Option B — Open the API URL directly (simplest)**
+**Option B — Open the API URL directly (recommended)**
 
 Paste in the browser address bar:
 
@@ -100,10 +113,10 @@ https://test.myfocusrewards.com/api/stripe/plans
 
 You should get **raw JSON** in the tab (no HTML). Check:
 
-- `stripeConfigured: true` (on test with Stripe env vars set)
-- `plans`: array with real prices, not only static placeholders
+- `stripeConfigured: true` (on test with Stripe env vars set) or `false` (static placeholders)
+- `plans`: array — compare prices to Stripe dashboard when configured; static fallback uses fixed amounts in `getStaticPlans()` when not
 
-This still shows up in Network as one `plans` request when you use Option B with DevTools already open.
+Shows as one **`plans`** Network row if DevTools was open when you loaded the URL.
 
 **Option C — Local**
 
@@ -118,57 +131,84 @@ With `NUXT_STRIPE_SECRET_KEY` in `.env` → expect `stripeConfigured: true`. Wit
 `GET /api/stripe/plans` is shorthand for: an HTTP **GET** request to that path. In Network you look for the **Name** `plans` or the **URL** containing `/api/stripe/plans`, not a field where you type the method.
 
 
-### B. **Main / Production** — Stripe may be *intentionally* unset
+### Out of scope — production (at launch)
 
-Inventory shows **no** `NUXT_STRIPE_*` on Production-only vars. So production may always hit “not configured” for checkout until you add keys.
+Production / `main` Stripe env is **not required** to tick extraction §3. When you launch, reconcile prod Vercel vars and Stripe keys separately (spreadsheet + launch checklist). Until then, prod may show `UNDER_CONSTRUCTION`, static plans, or blocked checkout — that does not block dev + test extraction closure.
 
-Check that’s OK for you:
+### B. **Local** — optional “not configured” drill
 
-1. `GET https://<prod-host>/api/stripe/plans` (browser while logged in, or curl with session cookie).
-   - Expect **200** + `stripeConfigured: false` + static plans.
-2. You’re **not** relying on live checkout on prod yet (e.g. `UNDER_CONSTRUCTION`, or no paid subs on prod).
+**Important:** `stripeConfigured` appears only on **`GET /api/stripe/plans`**, not on checkout responses. A checkout **401** means Stripe **is** configured and you failed auth — it does **not** prove the not-configured path.
 
-If prod has no Stripe keys **by design**, document in integration policy: *“Stripe: keep; configured on test preview; production keys TBD.”*
+**Test A — checkout blocked when Stripe key is missing (expect 500)**
 
-### C. **Local** — optional “not configured” drill
+Do steps **1 → 3 → 4 in order**. Do not run the step 4 curl until step 3 shows `"stripeConfigured": false`.
 
-1. Temporarily remove or comment `NUXT_STRIPE_SECRET_KEY` in `.env`.
-2. `npm run dev`
-3. `GET http://localhost:4000/api/stripe/plans` → 200, `stripeConfigured: false`.
-4. `POST /api/stripe/checkout` (needs auth) → 500 with clear message.
+1. Temporarily remove or comment **`NUXT_STRIPE_SECRET_KEY`** in `.env` (and restart — step 2 matters).
+2. **`npm run dev`** (must restart after editing `.env`; a running server keeps old env).
+3. **Gate check (required)** — browser or curl:
 
-Restore keys after.
+   ```cmd
+   curl -s http://localhost:4000/api/stripe/plans
+   ```
+
+   Expect **200**, `"stripeConfigured": false`, static placeholder prices.  
+   If you still see `"stripeConfigured": true`, stop — fix `.env` and restart before step 4.
+
+4. `POST /api/stripe/checkout` → **500** with clear message (only after step 3 passes). No login cookie needed when the key is unset.
+
+   **bash / Git Bash:**
+
+   ```bash
+   curl -s -i -X POST http://localhost:4000/api/stripe/checkout \
+     -H "Content-Type: application/json" \
+     -d '{"plan":"monthly"}'
+   ```
+
+   **Windows CMD** (single quotes don’t work — use escaped double quotes):
+
+   ```cmd
+   curl -s -i -X POST http://localhost:4000/api/stripe/checkout -H "Content-Type: application/json" -d "{\"plan\":\"monthly\"}"
+   ```
+
+   Expect **HTTP 500** and `"message": "Stripe is not configured..."`.
+
+   **If you get 401 instead:** Stripe is still configured — `NUXT_STRIPE_SECRET_KEY` is still loaded. Re-check `.env`, restart `npm run dev`, and re-check step 3 (`stripeConfigured` must be **false** before step 4).
+
+**Test B — auth gate when Stripe *is* configured (expect 401)**
+
+With **`NUXT_STRIPE_SECRET_KEY` present** (normal local `.env`), the same curl **without** a session cookie → **401** (`Unauthorized - must be logged in`). That is correct behavior, not a failure of the not-configured drill.
+
+Restore keys after Test A.
 
 ---
 
-## 4. Vercel dashboard spot-check
+## 4. Vercel dashboard spot-check (**test** branch only)
 
-**Settings → Environment Variables**
+**Settings → Environment Variables → Preview → branch `test`:**
 
-- **Preview**, branch **`test`**: `NUXT_STRIPE_SECRET_KEY`, publishable key, webhook secret, price IDs (if you use checkout).
-- **Production**: confirm whether Stripe vars are absent on purpose or an oversight.
+- `NUXT_STRIPE_SECRET_KEY`, publishable key, webhook secret, price IDs (for checkout on **test**)
 
-That’s the real split between test vs main — not `vercel.json`.
+Compare against your spreadsheet. **`docs/vercel environment inventory.md`** is optional reference (may include prod rows — not an extraction sign-off list).
 
 ---
 
 ## 5. When you can tick the `05_28` box
 
-Tick **`(both)` §3: Stripe routes...`** when you can say yes to:
+Tick **`(both)` §3: Stripe routes...`** when you can say yes to (**dev + test**):
 
 - [ ] All four routes exist (§1 above).
-- [ ] On **test**, `plans` returns `stripeConfigured: true` (or you’ve confirmed keys are set and redeployed).
-- [ ] On **prod**, either Stripe is configured and checkout works, **or** you accept “plans graceful / checkout blocked” until prod keys exist, and you’ll note that in **integration policy** (item **3a**).
+- [ ] On **test** preview, `GET /api/stripe/plans` returns `stripeConfigured: true` (Option B) or you’ve confirmed **`test`** Vercel vars + redeploy.
+- [ ] On **local**, §B Test A (optional): missing key → plans `stripeConfigured: false`, checkout → **500** with clear message; or §B Test B confirms **401** when configured without cookie.
 - [ ] Missing-key behavior is **clear 500 messages**, not opaque failures.
 
 ---
 
 ## Suggested one-liner for integration policy (item 3a)
 
-> **Stripe:** Keep. Implemented under `server/api/stripe/*`. Test preview (`test` branch) uses `NUXT_STRIPE_*`. Production: [configured / not yet — plans degrade gracefully, checkout returns explicit not-configured error].
+> **Stripe:** Keep. Implemented under `server/api/stripe/*`. **Dev:** local `.env`. **Test:** Vercel Preview branch `test` uses `NUXT_STRIPE_*`. **Production:** TBD at launch (not an extraction gate).
 
 ---
 
 ## Short answer
 
-You don’t need a special tool — confirm the four files, hit `/api/stripe/plans` on test (configured) and prod (likely `stripeConfigured: false`), and decide in writing whether prod without Stripe keys is intentional. Your inventory suggests **test = full Stripe, main = no Stripe keys yet**; if that matches your product plan, the behavior is acceptable for extraction.
+Confirm the four route files exist. Hit **`/api/stripe/plans` on test** (Option B) for `stripeConfigured: true`. Optionally run **§B** local drills for not-configured / auth behavior. Production Stripe is **out of scope** for extraction — handle at launch.
