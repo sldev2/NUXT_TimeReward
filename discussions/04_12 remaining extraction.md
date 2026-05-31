@@ -4,6 +4,19 @@ This note captures the extraction work that still appears open after the recent 
 
 **Checkboxes:** `- [x]` = done in this repo as of the last update note at the bottom. `- [ ]` = still open or needs a human pass. Edit this file as you complete items.
 
+## Environment scope (extraction sign-off)
+
+Extraction closure applies to **development** and **test** only:
+
+| Environment | Meaning in this repo |
+|-------------|----------------------|
+| **Development** | Local `.env` + `npm run dev` (localhost) |
+| **Test** | Vercel Preview, Git branch **`test`** (`test.myfocusrewards.com`) + Supabase **`time-reward-test`** |
+
+**Production / `main` deploy env is out of scope** for extraction checkboxes until launch. Track prod values in your spreadsheet when needed; do not block “Done when” on prod reconciliation.
+
+**Source of truth for values:** your env spreadsheet. Repo docs (`.env.example`, `ENV-SETUP.md`) describe **names, usage, and dev/test expectations** — not a full copy of every cell.
+
 ## Already completed
 
 - [x] Standalone repo shell created
@@ -38,12 +51,11 @@ This note captures the extraction work that still appears open after the recent 
 - [x ] Decide: stay on Vercel 
 
 **If deploying (verify and document):**
-  [ S K I P ]
-- [ ] Build command
-- [ ] Output directory
-- [ ] Environment-variable mapping (platform ↔ `docs/ENV-SETUP.md` ↔ `.env.example`)
-- [ ] Region choice
-- [ ] Security headers
+- [x] Build command
+- [x] Output directory
+- [x] Environment-variable mapping — **dev + test only** (local `.env` ↔ Vercel Preview branch `test` ↔ `.env.example` ↔ `docs/ENV-SETUP.md` ↔ code). Prod deferred at launch.
+- [x] Region choice
+- [x] Security headers
 
 ### 3. External integrations review
 
@@ -71,7 +83,8 @@ This note captures the extraction work that still appears open after the recent 
 
 ### 6. `junk` materials
 
-- [x] No `junk/` directory present in this workspace (removed or never shipped here). If a `junk` tree reappears, decide placement: `docs/`, `docs/handoff/`, or `docs/archive/`.
+- [x] No obsolete **parent-project** junk in tracked repo paths (`app/`, `docs/`, `server/`, etc.).
+- [x] Local **`junk/`** allowed when **gitignored** (see `.gitignore`) — scratch/reference only; not part of extraction handoff. Obsolete parent extraction debris must not live in git.
 
 ### 7. Validation after extraction
 
@@ -93,7 +106,7 @@ This note captures the extraction work that still appears open after the recent 
 
 ### 8. Database / app behavior checks
 
-Verify against the **target** Supabase project:
+Verify against Supabase **`time-reward-test`** (test environment — not prod):
 
 - [ ] User registration works
 - [ ] User login by username works
@@ -118,19 +131,19 @@ Verify against the **target** Supabase project:
 
 If the goal is to finish extraction efficiently, the next highest-value order is:
 
-1. [ ] Review deployment / env assumptions (§2, §3)
+1. [ ] Review deployment / env assumptions for **dev + test** (§2, §3)
 2. [ ] Verify target Supabase project and app behavior (§8)
 3. [ ] `npm run dev` + install/build + smoke checks (§7)
 4. [x] Historical-doc policy for `CHANGELOG.md` and session notes (§1) — closed 2026-05-10
 
 ## Done when
 
-- [ ] The app runs from the extracted repo without depending on the parent repo *(verify via §7–§8)*
+- [ ] The app runs from the extracted repo without depending on the parent repo *(verify via §7–§8 on dev + test)*
 - [x] Core onboarding docs do not require the parent repo for setup *(standalone `docs/README.md`, `docs/ENV-SETUP.md`, extraction checklist)*
-- [ ] The correct Supabase project is connected and migrated
-- [ ] Deployment / env config is coherent end-to-end
+- [ ] **`time-reward-test`** is connected and migrated *(test Supabase — prod project deferred)*
+- [ ] Deployment / env config is coherent for **development and test** *(local `.env` + Vercel Preview `test`; prod not required)*
 - [x] The canonical PRD is inside the extracted repo (`docs/REARCHITECT/PRD for NUXT.md`)
-- [ ] Another developer can set up the app using only the extracted repo *(blocked until §2–§3 decisions + §7–§8 verification)*
+- [ ] Another developer can set up the app using only the extracted repo *(local dev + test preview; prod launch checklist separate)*
 
 ## Progress (automated / agent)
 

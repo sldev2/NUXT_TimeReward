@@ -5,6 +5,8 @@
 
 **Master TODO:** Work from the [Working checklist](#working-checklist-master-todo) below until extraction is closed and Resend PRD Phases 1–3 (GSD Milestone A) are done. Detail checklists: `discussions/04_12 remaining extraction.md`, `docs/PRD for Resend use.md`.
 
+**Environment scope:** Extraction sign-off covers **development** (local `.env`) and **test** (Vercel Preview branch `test` + Supabase `time-reward-test`) only. **Production is deferred** until launch — not a gate for Layer 0. Env **values** live in your spreadsheet; repo docs track names, usage, and dev/test expectations.
+
 **Checkbox legend:** Marker immediately after `[ ]` — `(human)` = you in browser/dashboard/UAT; `(ai)` = agent can draft or implement in repo; `(both)` = pair (e.g. AI drafts table or doc, you verify Vercel/Supabase). Elaboration sub-bullets can be added under any item as you work through it — ask to expand in this file.
 
 ---
@@ -19,18 +21,17 @@ Tick in order when practical; steps 1–3 and 4–6 may overlap once env policy 
 
 - [x] `(human)` §2: Vercel hosting decision still correct for this repo
 - [x] `(both)` §2: `vercel.json` build command, output dir, region (`iad1`), security headers match deployed app
-- [X] `(both)` §2: Env docs exist and are usable (`docs/vercel environment inventory.md`, `docs/ENV-SETUP.md`, `.env.example`)
-- TODO  prod and demo
-- [ ] `(both)` §3: Stripe routes exist and “not configured” behavior is acceptable
-- [ ] `(both)` §1 / §4 / §6: Historical docs, app language pass, no stray `junk/` — still true
+- [X] `(both)` §2: Env docs exist and are usable (`docs/ENV-SETUP.md`, `.env.example`; Vercel **`test`** branch vars tracked in spreadsheet + optional `docs/vercel environment inventory.md` reference)
+- [x] `(both)` §3: Stripe routes exist and “not configured” behavior is acceptable
+- [x] `(both)` §1 / §4 / §6: Historical docs, app language pass, no obsolete **parent** junk in git — gitignored local `junk/` OK
 
 #### Open extraction work (blocks “Done when” in `04_12`)
 
-- [ ] `(both)` **1.** Refresh `discussions/04_12 remaining extraction.md` — tick §2 deployment sub-items that match `vercel.json` + inventory; note remaining gaps
-- [ ] `(both)` **2a.** Env reconciliation table: Vercel ↔ `.env.example` ↔ `ENV-SETUP.md` ↔ code usage
-- [ ] `(both)` **2b.** Label every listed var: **used | reserved | remove** (priority: `RESEND_*`, `EMAIL_AUTOMATION_*`, `NUXT_PUBLIC_LAUNCH_SOON`)
-- [ ] `(both)` **2c.** Update `.env.example` and `ENV-SETUP.md` from reconciliation results
-- [ ] `(both)` **3a.** Integration policy written (Stripe keep; Resend keep + PRD Phases 1–3; Turnstile optional/off; `EMAIL_AUTOMATION_*` reserved until Phase 4) — in `ENV-SETUP.md` and/or release runbook
+- [ ] `(both)` **1.** Refresh `discussions/04_12 remaining extraction.md` — tick §2 deployment sub-items that match `vercel.json` + **test** inventory/spreadsheet; note remaining **dev + test** gaps
+- [ ] `(both)` **2a.** Env reconciliation table: **local `.env`** ↔ **Vercel Preview `test`** ↔ `.env.example` ↔ `ENV-SETUP.md` ↔ code usage *(prod out of scope)*
+- [ ] `(both)` **2b.** Label every listed var for **dev + test**: **used | reserved | remove** (priority: `RESEND_*`, `EMAIL_AUTOMATION_*`, `NUXT_PUBLIC_LAUNCH_SOON`)
+- [ ] `(both)` **2c.** Update `.env.example` and `ENV-SETUP.md` from reconciliation results *(structure/usage; values stay in spreadsheet)*
+- [ ] `(both)` **3a.** Integration policy written for **dev + test** (Stripe keep on test preview; Resend keep + PRD Phases 1–3; Turnstile optional/off; `EMAIL_AUTOMATION_*` reserved until Phase 4; **prod: TBD at launch**) — in `ENV-SETUP.md` and/or release runbook
 - [ ] `(both)` **3b.** Copy Resend one-liner into `04_12` §3 (see suggested one-liner under [§3 Resend](#3-external-integrations--resend-closes-the-ambiguity) below)
 - [ ] `(human)` **4.** `npm run dev` at repo root — clean startup, no blocking errors
 - [ ] `(human)` **5a.** Browser smoke: landing, login, register load
@@ -54,8 +55,8 @@ Start after or in parallel with Layer 0 steps **1–3** (env policy clear). Exec
 #### A1 — Phase 1: Auth email via Resend SMTP
 
 - [ ] `(human)` Resend dashboard: domain/sender **Verified** for outbound (`support@myfocusrewards.com` / `send` subdomain)
-- [ ] `(human)` Supabase (test + prod as needed): Authentication → Email → Custom SMTP → Resend (`smtp.resend.com:587`, user `resend`, password = API key)
-- [ ] `(both)` Supabase redirect URLs documented and set (`/confirm` for prod, preview, local per PRD FR-1.2)
+- [ ] `(human)` Supabase **`time-reward-test`**: Authentication → Email → Custom SMTP → Resend (`smtp.resend.com:587`, user `resend`, password = API key) *(prod Supabase deferred to launch)*
+- [ ] `(both)` Supabase redirect URLs documented and set for **local + test** (`/confirm` per PRD FR-1.2; prod URLs at launch)
 - [ ] `(human)` Raise Supabase `rate_limit_email_sent` after custom SMTP active (see `docs/05_23 current auth email rate limit.md`)
 - [ ] `(both)` `.env.example` updated with `RESEND_SMTP_*` comments (PRD FR-1.5)
 - [ ] `(human)` **Acceptance:** Signup with `NUXT_SKIP_EMAIL_CONFIRMATION=false` sends from app sender, not Supabase default
@@ -100,7 +101,7 @@ Start after or in parallel with Layer 0 steps **1–3** (env policy clear). Exec
 
 | Track | Goal | Doc |
 |-------|------|-----|
-| **Extraction closure** | Repo is standalone, deploy/env/integration **policies are decided and verified**, another dev can onboard | `discussions/04_12 remaining extraction.md` |
+| **Extraction closure** | Repo is standalone; **dev + test** env/integration policies decided and verified; another dev can onboard locally and on `test` | `discussions/04_12 remaining extraction.md` |
 | **Product milestones (GSD)** | Ship Resend, then timing/sync re-engineering | `discussions/05_27 dev directions advice.md`, `docs/PRD for Resend use.md` |
 
 Extraction is **“is the repo a coherent standalone product?”**  
@@ -120,15 +121,15 @@ Since `04_12` was last updated (2026-05-10), a lot happened (Vercel/DNS, legal p
 |---|------|----------|
 | **§2 Deployment** | Stay on Vercel | Decision marked done |
 | **§2** | Build/output/region/headers | `vercel.json`: `npm run build`, `.output`, `iad1`, security headers |
-| **§2** | Env mapping (partial) | `docs/vercel environment inventory.md`, `docs/ENV-SETUP.md`, `.env.example` |
+| **§2** | Env mapping (partial, **dev + test**) | Local `.env`, Vercel Preview **`test`**, `docs/ENV-SETUP.md`, `.env.example`, spreadsheet |
 | **§3 Stripe** | Keep | Implemented in `server/api/stripe/*`; “not configured” errors exist |
-| **§1, §4, §6** | Historical docs, app language, junk | Closed per 04_12 + later session work |
+| **§1, §4, §6** | Historical docs, app language, junk policy | Parent junk not in git; gitignored `junk/` OK for local scratch |
 
 ### Still genuinely open (blocks “Done when”)
 
 | § | Item | Why it still matters |
 |---|------|----------------------|
-| **§2** | Formal env reconciliation | Vercel inventory lists `RESEND_*`, `EMAIL_AUTOMATION_*`, `NUXT_PUBLIC_LAUNCH_SOON` — **not all in `.env.example` or wired in code** |
+| **§2** | Formal env reconciliation (**dev + test**) | Spreadsheet + Vercel **`test`** vs `.env.example` / code — **`RESEND_*`, `EMAIL_AUTOMATION_*`, etc.** not all wired |
 | **§3** | Integration **policy** written down | Stripe/Resend/Turnstile need explicit keep/disable/document decisions |
 | **§7** | `npm run dev` + browser smoke | Never checked off |
 | **§8** | Supabase behavior matrix | Registration, timers, offline, rewards, etc. |
@@ -161,7 +162,7 @@ Suggested one-liner for `04_12` §3:
 
 | Integration | Extraction decision | Tie to GSD |
 |-------------|---------------------|----------|
-| **Stripe** | **Keep** — document preview vs prod env scope (`test` branch has keys; prod may differ) | Independent of Resend milestone |
+| **Stripe** | **Keep** — configured on **test** preview (`test` branch); local via `.env`. **Prod deferred at launch.** | Independent of Resend milestone |
 | **Turnstile** | **Disable / document optional** — keys in Vercel inventory but **not wired** in TimeReward code | Wire only if a feature needs it (e.g. PU-style recovery); not required for Resend Phases 1–3 |
 
 ### §8 Database checks — overlaps with Resend Phase 1 testing
@@ -194,14 +195,16 @@ Layer 3 — GSD Milestone C: Resend Phases 4–5 (optional, later)
 **Goal:** Check “Done when” boxes in `04_12` except optional §5.
 
 1. **Refresh `04_12`** — mark §2 deployment sub-items done where `vercel.json` + inventory already match; note gaps.
-2. **Env reconciliation pass** (closes §2 + §3):
-   - Table: Vercel ↔ `.env.example` ↔ `ENV-SETUP.md` ↔ code usage
+2. **Env reconciliation pass** (closes §2 + §3) — **dev + test only**:
+   - Table: local `.env` ↔ Vercel Preview **`test`** ↔ `.env.example` ↔ `ENV-SETUP.md` ↔ code usage
    - Label each var: **used | reserved | remove**
    - Especially: `RESEND_*`, `EMAIL_AUTOMATION_*`, `NUXT_PUBLIC_LAUNCH_SOON`
-3. **Integration policy blurb** in `ENV-SETUP.md` or `release-operations-runbook.md` (closes §3):
-   - Stripe: keep
+   - Values: spreadsheet; repo docs = names + usage
+3. **Integration policy blurb** for **dev + test** in `ENV-SETUP.md` or runbook (closes §3):
+   - Stripe: keep on test preview + local
    - Resend: keep, implement per PRD
    - Turnstile: optional/off until wired
+   - Production: **TBD at launch** (one line — not an extraction gate)
 4. **§7:** `npm run dev` + browser smoke list
 5. **§8:** Supabase behavior checklist on `time-reward-test`
 6. **§9:** Playwright `baseURL` + doc pass (can defer if you don’t run E2E yet)
