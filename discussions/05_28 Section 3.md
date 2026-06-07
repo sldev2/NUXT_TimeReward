@@ -145,14 +145,20 @@ Do steps **1 → 3 → 4 in order**. Do not run the step 4 curl until step 3 sho
 
 1. Temporarily remove or comment **`NUXT_STRIPE_SECRET_KEY`** in `.env` (and restart — step 2 matters).
 2. **`npm run dev`** (must restart after editing `.env`; a running server keeps old env).
-3. **Gate check (required)** — browser or curl:
+3. **Gate check (required)** — plans only (not checkout). Browser or curl:
 
    ```cmd
-   curl -s http://localhost:4000/api/stripe/plans
+   curl -s -i http://localhost:4000/api/stripe/plans
    ```
 
-   Expect **200**, `"stripeConfigured": false`, static placeholder prices.  
-   If you still see `"stripeConfigured": true`, stop — fix `.env` and restart before step 4.
+   **Pass when:**
+   - First line: **`HTTP/1.1 200`**
+   - JSON includes **`"stripeConfigured": false`**
+   - `"plans"`: three static placeholders (e.g. prices **10 / 34 / 90**)
+
+   `curl -s` without `-i` hides the status line — if you only see JSON, check `"stripeConfigured": false` in the body; that still means step 3 passed.
+
+   If you see **`"stripeConfigured": true`**, stop — fix `.env` and restart before step 4.
 
 4. `POST /api/stripe/checkout` → **500** with clear message (only after step 3 passes). No login cookie needed when the key is unset.
 
@@ -170,9 +176,9 @@ Do steps **1 → 3 → 4 in order**. Do not run the step 4 curl until step 3 sho
    curl -s -i -X POST http://localhost:4000/api/stripe/checkout -H "Content-Type: application/json" -d "{\"plan\":\"monthly\"}"
    ```
 
-   Expect **HTTP 500** and `"message": "Stripe is not configured..."`.
+   Expect **HTTP 500** and `"message": "Stripe is not configured..."` (env var in `.env` is **`NUXT_STRIPE_SECRET_KEY`**; the error text may say `STRIPE_SECRET_KEY`).
 
-   **If you get 401 instead:** Stripe is still configured — `NUXT_STRIPE_SECRET_KEY` is still loaded. Re-check `.env`, restart `npm run dev`, and re-check step 3 (`stripeConfigured` must be **false** before step 4).
+   **If you get 401 instead:** Stripe is still configured — re-check `.env`, restart `npm run dev`, and re-run step 3.
 
 **Test B — auth gate when Stripe *is* configured (expect 401)**
 
@@ -196,10 +202,10 @@ Compare against your spreadsheet. **`docs/vercel environment inventory.md`** is 
 
 Tick **`(both)` §3: Stripe routes...`** when you can say yes to (**dev + test**):
 
-- [ ] All four routes exist (§1 above).
-- [ ] On **test** preview, `GET /api/stripe/plans` returns `stripeConfigured: true` (Option B) or you’ve confirmed **`test`** Vercel vars + redeploy.
-- [ ] On **local**, §B Test A (optional): missing key → plans `stripeConfigured: false`, checkout → **500** with clear message; or §B Test B confirms **401** when configured without cookie.
-- [ ] Missing-key behavior is **clear 500 messages**, not opaque failures.
+- [x] All four routes exist (§1 above).
+- [x] On **test** preview, `GET /api/stripe/plans` returns `stripeConfigured: true` (Option B) or you’ve confirmed **`test`** Vercel vars + redeploy.
+- [x] On **local**, §B Test A (optional): missing key → plans `stripeConfigured: false`, checkout → **500** with clear message; or §B Test B confirms **401** when configured without cookie.
+- [x] Missing-key behavior is **clear 500 messages**, not opaque failures.
 
 ---
 

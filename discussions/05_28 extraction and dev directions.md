@@ -27,8 +27,31 @@ Tick in order when practical; steps 1–3 and 4–6 may overlap once env policy 
 
 #### Open extraction work (blocks “Done when” in `04_12`)
 
-- [ ] `(both)` **1.** Refresh `discussions/04_12 remaining extraction.md` — tick §2 deployment sub-items that match `vercel.json` + **test** inventory/spreadsheet; note remaining **dev + test** gaps
-- [ ] `(both)` **2a.** Env reconciliation table: **local `.env`** ↔ **Vercel Preview `test`** ↔ `.env.example` ↔ `ENV-SETUP.md` ↔ code usage *(prod out of scope)*
+- [x] `(both)` **1.** Refresh `discussions/04_12 remaining extraction.md` — tick §2 deployment sub-items that match `vercel.json` + **test** inventory/spreadsheet; note remaining **dev + test** gaps
+- [ ] `(both)` **2a.** Build the **env reconciliation table** (defined below) — one row per environment variable, comparing where it is defined vs. where it is used, for **dev + test only** *(prod out of scope)*
+
+  **What the "env reconciliation table" is:** a single table with **one row per environment variable** and **one column per place that variable could be declared or consumed**. Filling it in shows, at a glance, every var that is set-but-unused, used-but-undeclared, or inconsistently named across sources. Put it in `04_12` §2 (or a scratch doc) while reconciling; the conclusions feed **2b** (label) and **2c** (update `.env.example` / `ENV-SETUP.md`).
+
+  Columns (left to right = "declared" sources, then "used"):
+
+  | Column | Meaning | Where to look |
+  |--------|---------|---------------|
+  | **Variable** | Exact env var name (e.g. `NUXT_STRIPE_SECRET_KEY`) | — |
+  | **local `.env`** | Present in your local dev file? value-or-blank/placeholder | `.env` (gitignored; values are yours) |
+  | **Vercel Preview `test`** | Set on Vercel for the `test` branch preview? | Vercel → Settings → Environment Variables → Preview (branch `test`), or your spreadsheet |
+  | **`.env.example`** | Documented as a name/placeholder for other devs? | `.env.example` |
+  | **`ENV-SETUP.md`** | Explained (what it is / when needed)? | `docs/ENV-SETUP.md` |
+  | **code usage** | Actually read by app/server code? where? | `runtimeConfig` in `nuxt.config.ts` + `useRuntimeConfig()` / `process.env` references |
+
+  Mark each cell **✓ / ✗ / placeholder / name-mismatch**. A row that is ✓ in a "declared" column but ✗ in **code usage** = a candidate for **reserved** or **remove** (decided in 2b). A row used in **code** but ✗ in `.env.example` / `ENV-SETUP.md` = a documentation gap to fix in 2c. **Values stay in your spreadsheet**; this table tracks presence/usage, not secrets.
+
+  Example rows:
+
+  | Variable | local `.env` | Vercel `test` | `.env.example` | `ENV-SETUP.md` | code usage |
+  |----------|:---:|:---:|:---:|:---:|---|
+  | `NUXT_STRIPE_SECRET_KEY` | ✓ | ✓ | ✓ | ✓ | `nuxt.config.ts` → `stripeSecretKey`; stripe routes |
+  | `KV_REST_API_URL` | ✓ | ? | ✓ | ✗ | `nuxt.config.ts` → `kvRestApiUrl`; `/api/keepalive` |
+  | `EMAIL_AUTOMATION_ENABLED` | ✗ | ✓ | ✗ | ✗ | none (reserved until Resend Phase 4) |
 - [ ] `(both)` **2b.** Label every listed var for **dev + test**: **used | reserved | remove** (priority: `RESEND_*`, `EMAIL_AUTOMATION_*`, `NUXT_PUBLIC_LAUNCH_SOON`)
 - [ ] `(both)` **2c.** Update `.env.example` and `ENV-SETUP.md` from reconciliation results *(structure/usage; values stay in spreadsheet)*
 - [ ] `(both)` **3a.** Integration policy written for **dev + test** (Stripe keep on test preview; Resend keep + PRD Phases 1–3; Turnstile optional/off; `EMAIL_AUTOMATION_*` reserved until Phase 4; **prod: TBD at launch**) — in `ENV-SETUP.md` and/or release runbook

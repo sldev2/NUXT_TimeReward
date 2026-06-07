@@ -53,9 +53,59 @@ Extraction closure applies to **development** and **test** only:
 **If deploying (verify and document):**
 - [x] Build command
 - [x] Output directory
-- [x] Environment-variable mapping — **dev + test only** (local `.env` ↔ Vercel Preview branch `test` ↔ `.env.example` ↔ `docs/ENV-SETUP.md` ↔ code). Prod deferred at launch.
+- [x] Environment-variable mapping — **dev + test only** (local `.env` ↔ Vercel Preview branch `test` ↔ `.env.example` ↔ `docs/ENV-SETUP.md` ↔ code). Prod deferred at launch. See **§2a** table below.
 - [x] Region choice
 - [x] Security headers
+
+### 2a. Env reconciliation table (dev + test)
+
+One row per env var; one column per place it can be declared or used. Tracks **presence/usage, not secret values** (values live in your spreadsheet / `.env`). Scope: **development + test** (prod out of scope until launch).
+
+**Legend:** ✓ = present/used · ✗ = absent · `ph` = placeholder only (no real value) · `slot` = declared in `nuxt.config.ts` `runtimeConfig` but not actually read by code · `?` = verify.
+
+Snapshot date: **2026-06-07**.
+
+| Variable | local `.env` | Vercel `test` | `.env.example` | `ENV-SETUP.md` | code usage |
+|----------|:---:|:---:|:---:|:---:|---|
+| `SUPABASE_URL` | ✓ | ✓ | ✓ | ✓ | `@nuxtjs/supabase`; `config.public.supabaseUrl` (webhook, login, register) |
+| `SUPABASE_KEY` | ✓ | ✓ | ✓ | ✓ | `@nuxtjs/supabase` anon key; `public.supabaseKey` (login, register) |
+| `SUPABASE_SECRET_KEY` | ✓ | ✓ | ✓ | ✓ | `@nuxtjs/supabase` `serverSupabaseServiceRole`; `runtimeConfig.supabaseSecretKey`; Stripe webhook admin client; scripts |
+| `NUXT_STRIPE_SECRET_KEY` | ✓ | ✓ | ✓ | ✓ | `stripeSecretKey`; all `server/api/stripe/*` |
+| `NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ✓ | ✓ | ✓ | ~ | `public.stripePublishableKey` **`slot`** — declared, not read in code |
+| `NUXT_STRIPE_WEBHOOK_SECRET` | ✓ | ✓ | ✓ | ✓ | `stripeWebhookSecret`; `webhook.post.ts` |
+| `NUXT_STRIPE_PRICE_ID_MONTHLY` | ✓ | ✓ | ✓ | ~ | `stripePriceIdMonthly`; `plans.get.ts`, `checkout.post.ts` |
+| `NUXT_STRIPE_PRICE_ID_QUARTERLY` | ✓ | ✓ | ✓ | ~ | `stripePriceIdQuarterly`; plans/checkout |
+| `NUXT_STRIPE_PRICE_ID_YEARLY` | ✓ | ✓ | ✓ | ~ | `stripePriceIdYearly`; plans/checkout |
+| `NUXT_STRIPE_PRICE_ID_DEFAULT` | ✓ | ✗ | ✓ | ✗ | `stripePriceIdDefault` **`slot`** — fallback, not actively read |
+| `NUXT_PUBLIC_APP_URL` | ✓ | ✓ | ✓ | ✓ | `public.appUrl`; redirects, legal pages, checkout, register |
+| `NUXT_PUBLIC_SHOW_TEST_USERS` | ✗ | ✓ | ✗ | ✗ | ✗ — **set-but-unused (gap 2)** |
+| `NUXT_PUBLIC_SHOW_PHONE_NUMBER` | ✗ | ✓ | ✗ | ✗ | ✗ — **set-but-unused (gap 2)** |
+| `NUXT_PUBLIC_HIDE_LANDING_PAGE_COUNTERS` | ✗ | ✓ | ✗ | ✗ | ✗ — **set-but-unused (gap 2)** |
+| `BOZ23` | ✓ | ✓ | ✓ | ✗ | `runtimeConfig.boz23`; `registration-policy.get.ts` |
+| `KV_REST_API_URL` | ✓ | ✓ | ✓ | ✗ | `kvRestApiUrl`; `/api/keepalive` |
+| `KV_REST_API_TOKEN` | ✓ | ✓ | ✓ | ✗ | `kvRestApiToken`; `/api/keepalive` |
+| `KV_REST_API_READ_ONLY_TOKEN` | ✗ | ✓ | ✗ | ✗ | ✗ — Vercel KV default, unused |
+| `KV_REDIS_URL` | ✗ | ✓ | ✗ | ✗ | ✗ — Vercel KV default, unused |
+| `KV_URL` | ✗ | ✓ | ✗ | ✗ | ✗ — Vercel KV default, unused |
+| `GEOCODING_API_KEY` | ✗ | ✓ | ✗ | ✗ | ✗ — **set-but-unused (gap 3)** |
+| `TURNSTILE_SITE_KEY` | `ph` | ✓ | ✓ | ✓ (reserved) | `public.turnstileSiteKey` **`slot`** — not wired |
+| `TURNSTILE_SECRET_KEY` | `ph` | ✓ | ✓ | ✓ (reserved) | `turnstileSecretKey` **`slot`** — not wired |
+| `RESEND_API_KEY` | `ph` | ✓ | ✓ | ✓ (reserved) | `resendApiKey` **`slot`** — not wired (PRD Phase 3) |
+| `EMAIL_FROM_ADDRESS` | ✗ | ✓ | ✗ | ✗ | ✗ — reserved (Resend) |
+| `EMAIL_FROM_NAME` | ✗ | ✓ | ✗ | ✗ | ✗ — reserved (Resend) |
+| `EMAIL_AUTOMATION_ENABLED` | ✗ | ✓ | ✗ | ✗ | ✗ — reserved until Resend Phase 4 |
+| `EMAIL_DISPATCH_INTERVAL_MS` | ✗ | ✓ | ✗ | ✗ | ✗ — reserved until Resend Phase 4 |
+
+**~** in `ENV-SETUP.md` = covered only by the general "Stripe keys / price IDs" sentence, not named individually.
+
+#### Gaps / actions surfaced (feed 2b/2c)
+
+1. **`SUPABASE_SECRET_KEY` migration (2026-06-07):** Vercel dev/test/prod now use `SUPABASE_SECRET_KEY` (replaces `SUPABASE_SERVICE_ROLE_KEY`). Code updated: `nuxt.config.ts` → `supabaseSecretKey`, webhook, scripts, Playwright reset-timers.
+2. **`NUXT_PUBLIC_SHOW_TEST_USERS` / `_SHOW_PHONE_NUMBER` / `_HIDE_LANDING_PAGE_COUNTERS`** set on Vercel `test` but **no `runtimeConfig.public` slot and no code reads them** → currently inert. Decide **wire** (add public slots + usage) or **remove** from Vercel; document in `.env.example` if kept.
+3. **`GEOCODING_API_KEY`** set on all envs but unused in code → **reserved or remove**.
+4. **KV defaults** (`KV_REST_API_READ_ONLY_TOKEN`, `KV_REDIS_URL`, `KV_URL`) auto-added by Vercel KV; harmless. Only `KV_REST_API_URL` + `KV_REST_API_TOKEN` are used. Leave as-is.
+5. **`KV_REST_API_*` and `BOZ23`** are used + in `.env.example` but **not described in `ENV-SETUP.md`** → add short notes in **2c**.
+6. **Reserved (slot-only):** `NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `TURNSTILE_*`, `RESEND_API_KEY`, `EMAIL_*`, `NUXT_STRIPE_PRICE_ID_DEFAULT` — keep as reserved; label in **2b** so "set-but-unused" is intentional, not an oversight.
 
 ### 3. External integrations review
 
