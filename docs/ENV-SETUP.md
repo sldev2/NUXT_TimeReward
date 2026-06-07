@@ -29,6 +29,14 @@ See the repo root **`.env.example`** for the full list and naming (that file is 
 
 **Resend / Cloudflare Turnstile:** Slots exist on `runtimeConfig` in `nuxt.config.ts`, and keys may appear in `.env.example`, but **there is no current usage in `app/` or `server/` code paths**—treat them as reserved for future work unless you wire them in.
 
+**Reserved UI flags (Vercel `test`; not wired yet):** These may be set on the test preview in Vercel but are **inactive** until landing/auth UI reads them. Safe to omit locally. See commented entries in `.env.example`.
+
+| Variable | Intended use (when wired) |
+|----------|---------------------------|
+| `NUXT_PUBLIC_SHOW_TEST_USERS` | Show test-user affordances on landing/auth |
+| `NUXT_PUBLIC_SHOW_PHONE_NUMBER` | Show phone number on landing/contact |
+| `NUXT_PUBLIC_HIDE_LANDING_PAGE_COUNTERS` | Hide public counter widgets on landing |
+
 **App URL:** `NUXT_PUBLIC_APP_URL` (see `.env.example`) for redirects and absolute links.
 
 ## Getting Your Supabase Credentials

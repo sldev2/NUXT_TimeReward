@@ -61,7 +61,7 @@ Extraction closure applies to **development** and **test** only:
 
 One row per env var; one column per place it can be declared or used. Tracks **presence/usage, not secret values** (values live in your spreadsheet / `.env`). Scope: **development + test** (prod out of scope until launch).
 
-**Legend:** ✓ = present/used · ✗ = absent · `ph` = placeholder only (no real value) · `slot` = declared in `nuxt.config.ts` `runtimeConfig` but not actually read by code · `?` = verify.
+**Legend:** ✓ = present/used · ✗ = absent · `comment` = commented placeholder in `.env.example` (name documented, unset locally) · `ph` = placeholder only (no real value) · `slot` = declared in `nuxt.config.ts` `runtimeConfig` but not actually read by code · `?` = verify.
 
 Snapshot date: **2026-06-07**.
 
@@ -76,11 +76,10 @@ Snapshot date: **2026-06-07**.
 | `NUXT_STRIPE_PRICE_ID_MONTHLY` | ✓ | ✓ | ✓ | ~ | `stripePriceIdMonthly`; `plans.get.ts`, `checkout.post.ts` |
 | `NUXT_STRIPE_PRICE_ID_QUARTERLY` | ✓ | ✓ | ✓ | ~ | `stripePriceIdQuarterly`; plans/checkout |
 | `NUXT_STRIPE_PRICE_ID_YEARLY` | ✓ | ✓ | ✓ | ~ | `stripePriceIdYearly`; plans/checkout |
-| `NUXT_STRIPE_PRICE_ID_DEFAULT` | ✓ | ✗ | ✓ | ✗ | `stripePriceIdDefault` **`slot`** — fallback, not actively read |
 | `NUXT_PUBLIC_APP_URL` | ✓ | ✓ | ✓ | ✓ | `public.appUrl`; redirects, legal pages, checkout, register |
-| `NUXT_PUBLIC_SHOW_TEST_USERS` | ✗ | ✓ | ✗ | ✗ | ✗ — **set-but-unused (gap 2)** |
-| `NUXT_PUBLIC_SHOW_PHONE_NUMBER` | ✗ | ✓ | ✗ | ✗ | ✗ — **set-but-unused (gap 2)** |
-| `NUXT_PUBLIC_HIDE_LANDING_PAGE_COUNTERS` | ✗ | ✓ | ✗ | ✗ | ✗ — **set-but-unused (gap 2)** |
+| `NUXT_PUBLIC_SHOW_TEST_USERS` | ✗ | ✓ | comment | ✓ (reserved) | **reserved** — on Vercel `test`; not wired; future landing/auth UI |
+| `NUXT_PUBLIC_SHOW_PHONE_NUMBER` | ✗ | ✓ | comment | ✓ (reserved) | **reserved** — on Vercel `test`; not wired; future landing/contact UI |
+| `NUXT_PUBLIC_HIDE_LANDING_PAGE_COUNTERS` | ✗ | ✓ | comment | ✓ (reserved) | **reserved** — on Vercel `test`; not wired; future landing UI |
 | `BOZ23` | ✓ | ✓ | ✓ | ✗ | `runtimeConfig.boz23`; `registration-policy.get.ts` |
 | `KV_REST_API_URL` | ✓ | ✓ | ✓ | ✗ | `kvRestApiUrl`; `/api/keepalive` |
 | `KV_REST_API_TOKEN` | ✓ | ✓ | ✓ | ✗ | `kvRestApiToken`; `/api/keepalive` |
@@ -101,11 +100,12 @@ Snapshot date: **2026-06-07**.
 #### Gaps / actions surfaced (feed 2b/2c)
 
 1. **`SUPABASE_SECRET_KEY` migration (2026-06-07):** Vercel dev/test/prod now use `SUPABASE_SECRET_KEY` (replaces `SUPABASE_SERVICE_ROLE_KEY`). Code updated: `nuxt.config.ts` → `supabaseSecretKey`, webhook, scripts, Playwright reset-timers.
-2. **`NUXT_PUBLIC_SHOW_TEST_USERS` / `_SHOW_PHONE_NUMBER` / `_HIDE_LANDING_PAGE_COUNTERS`** set on Vercel `test` but **no `runtimeConfig.public` slot and no code reads them** → currently inert. Decide **wire** (add public slots + usage) or **remove** from Vercel; document in `.env.example` if kept.
+2. **`NUXT_PUBLIC_SHOW_TEST_USERS` / `_SHOW_PHONE_NUMBER` / `_HIDE_LANDING_PAGE_COUNTERS` — resolved (2026-06-07):** Keep on Vercel `test`; label **reserved** in 2b. Documented in `.env.example` (commented) and `ENV-SETUP.md`. No code wiring until a future UI phase — inert today by design, not an oversight.
 3. **`GEOCODING_API_KEY`** set on all envs but unused in code → **reserved or remove**.
 4. **KV defaults** (`KV_REST_API_READ_ONLY_TOKEN`, `KV_REDIS_URL`, `KV_URL`) auto-added by Vercel KV; harmless. Only `KV_REST_API_URL` + `KV_REST_API_TOKEN` are used. Leave as-is.
 5. **`KV_REST_API_*` and `BOZ23`** are used + in `.env.example` but **not described in `ENV-SETUP.md`** → add short notes in **2c**.
-6. **Reserved (slot-only):** `NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `TURNSTILE_*`, `RESEND_API_KEY`, `EMAIL_*`, `NUXT_STRIPE_PRICE_ID_DEFAULT` — keep as reserved; label in **2b** so "set-but-unused" is intentional, not an oversight.
+6. **Reserved (slot-only or documented, not wired):** `NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, **`NUXT_PUBLIC_SHOW_*` / `_HIDE_LANDING_PAGE_COUNTERS`**, `TURNSTILE_*`, `RESEND_API_KEY`, `EMAIL_*` — intentional; label in **2b**.
+7. **`NUXT_STRIPE_PRICE_ID_DEFAULT` removed (2026-06-07):** Legacy nameless checkout fallback deleted; `POST /api/stripe/checkout` requires `plan` or `priceId`. Remove from local `.env` / Vercel if still set.
 
 ### 3. External integrations review
 
