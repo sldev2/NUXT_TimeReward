@@ -29,7 +29,6 @@ Ensure the following environment variables are configured in Vercel:
 | `STRIPE_PRICE_ID_MONTHLY` | 1-month subscription price ID | Yes |
 | `STRIPE_PRICE_ID_SEMIANNUAL` | 6-month subscription price ID | Yes |
 | `STRIPE_PRICE_ID_YEARLY` | 12-month subscription price ID | Yes |
-| `STRIPE_PRICE_ID_DEFAULT` | Default/fallback price ID | Recommended |
 | `NUXT_PUBLIC_APP_URL` | Production app URL | Yes |
 | `NUXT_PUBLIC_APP_ENV` | Environment (production) | Recommended |
 | `ALLOW_DEMO_DATA` | Allow demo data API endpoint (server-side) | No (false for prod) |

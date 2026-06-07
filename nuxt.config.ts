@@ -73,7 +73,6 @@ export default defineNuxtConfig({
     stripePriceIdMonthly: '',    // 1-month plan
     stripePriceIdQuarterly: '',  // 4-month plan (labeled Quarterly in UI)
     stripePriceIdYearly: '',     // 12-month plan
-    stripePriceIdDefault: '',    // Fallback default
     resendApiKey: '',
     turnstileSecretKey: '',
     skipEmailConfirmation: 'false', // Set to 'true' to auto-confirm new users (dev only)

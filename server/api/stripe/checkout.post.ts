@@ -4,10 +4,10 @@
  * Creates a Stripe Checkout session for subscription upgrade.
  * Redirects user to Stripe's hosted payment page.
  * 
- * Request Body:
+ * Request Body (one required):
  *   { 
- *     plan?: 'monthly' | 'quarterly' | 'yearly',  // Plan selection
- *     priceId?: string                              // Or specific Stripe Price ID
+ *     plan: 'monthly' | 'quarterly' | 'yearly',  // Plan selection (UI path)
+ *     priceId?: string                             // Or specific Stripe Price ID (API/advanced)
  *   }
  * 
  * Response:
@@ -103,17 +103,15 @@ export default defineEventHandler(async (event) => {
     // Read request body for plan selection
     const body = await readBody(event)
     
-    // Determine price ID from plan name, explicit priceId, or default
+    // Determine price ID from explicit priceId or plan name (one required)
     let priceId: string | undefined
-    
+
     if (body?.priceId) {
-      // Explicit price ID provided
       priceId = body.priceId
     } else if (body?.plan && PLAN_CONFIG_MAP[body.plan]) {
-      // Plan name provided - look up corresponding price ID
       const configKey = PLAN_CONFIG_MAP[body.plan] as keyof typeof config
       priceId = config[configKey] as string
-      
+
       if (!priceId) {
         throw createError({
           statusCode: 400,
@@ -121,14 +119,9 @@ export default defineEventHandler(async (event) => {
         })
       }
     } else {
-      // Fall back to default price ID
-      priceId = config.stripePriceIdDefault || config.stripePriceIdMonthly
-    }
-
-    if (!priceId) {
       throw createError({
         statusCode: 400,
-        message: 'No price ID configured. Set a default Stripe price ID or specify a plan (monthly, quarterly, yearly).'
+        message: 'Specify plan (monthly, quarterly, yearly) or priceId in the request body.'
       })
     }
 
