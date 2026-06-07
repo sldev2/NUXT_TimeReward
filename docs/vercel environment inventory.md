@@ -19,7 +19,7 @@ These variables are set for `production`, `preview`, and `development`:
 
 - `SUPABASE_URL`
 - `SUPABASE_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_SECRET_KEY`
 - `NUXT_PUBLIC_SHOW_PHONE_NUMBER`
 - `NUXT_PUBLIC_LAUNCH_SOON`
 - `NUXT_PUBLIC_APP_URL`
@@ -29,7 +29,7 @@ These variables are set for `production`, `preview`, and `development`:
 
 - `SUPABASE_URL`
 - `SUPABASE_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_SECRET_KEY`
 - `NUXT_STRIPE_SECRET_KEY`
 - `NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
 - `NUXT_STRIPE_WEBHOOK_SECRET`

@@ -10,7 +10,7 @@
  *
  * Environment: Loaded from NUXT_TimeReward/.env if present. Required:
  *   SUPABASE_URL - Your Supabase project URL
- *   SUPABASE_SERVICE_ROLE_KEY - Service role key (required for auth admin)
+ *   SUPABASE_SECRET_KEY - Service-role / secret key (required for auth admin)
  */
 
 import { config } from 'dotenv'
@@ -33,10 +33,10 @@ async function main() {
   }
 
   const supabaseUrl = process.env.SUPABASE_URL
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const serviceRoleKey = process.env.SUPABASE_SECRET_KEY
 
   if (!supabaseUrl || !serviceRoleKey) {
-    console.error('Error: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set (e.g. in .env)')
+    console.error('Error: SUPABASE_URL and SUPABASE_SECRET_KEY must be set (e.g. in .env)')
     process.exit(1)
   }
 

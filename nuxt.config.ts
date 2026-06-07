@@ -66,7 +66,7 @@ export default defineNuxtConfig({
   // Runtime config for environment variables
   runtimeConfig: {
     // Server-side only
-    supabaseServiceRoleKey: '',
+    supabaseSecretKey: process.env.SUPABASE_SECRET_KEY ?? '', // Supabase service-role / secret key for admin clients
     stripeSecretKey: '',
     stripeWebhookSecret: '',
     // Stripe subscription price IDs

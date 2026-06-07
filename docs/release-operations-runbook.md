@@ -22,7 +22,7 @@ Ensure the following environment variables are configured in Vercel:
 |----------|-------------|----------|
 | `SUPABASE_URL` | Supabase project URL | Yes |
 | `SUPABASE_KEY` | Supabase anon/public key | Yes |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (server-side) | Yes |
+| `SUPABASE_SECRET_KEY` | Supabase service-role / secret key (server-side) | Yes |
 | `STRIPE_SECRET_KEY` | Stripe secret key | Yes |
 | `STRIPE_PUBLISHABLE_KEY` | Stripe publishable key | Yes |
 | `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret | Yes |
@@ -240,7 +240,7 @@ curl -X POST http://localhost:4000/api/admin/load-demo-data \
 ### Option 3: CLI Script (Multiple Users)
 ```bash
 cd NUXT_TimeReward
-SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... npx tsx scripts/seed-demo-data.ts
+SUPABASE_URL=... SUPABASE_SECRET_KEY=... npx tsx scripts/seed-demo-data.ts
 ```
 
 This creates:

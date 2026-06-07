@@ -68,7 +68,7 @@ export default defineEventHandler(async (event) => {
   // Create admin Supabase client for updates
   const supabase = createClient(
     config.public.supabaseUrl,
-    config.supabaseServiceRoleKey,
+    config.supabaseSecretKey,
     {
       auth: {
         autoRefreshToken: false,

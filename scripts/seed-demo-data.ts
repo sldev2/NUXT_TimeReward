@@ -9,7 +9,7 @@
  * 
  * Environment Variables Required:
  *   SUPABASE_URL - Your Supabase project URL
- *   SUPABASE_SERVICE_ROLE_KEY - Service role key (for admin operations)
+ *   SUPABASE_SECRET_KEY - Service-role / secret key (for admin operations)
  */
 
 import { createClient } from '@supabase/supabase-js'
@@ -109,11 +109,11 @@ const BREAKS = [
 async function main() {
   // Load environment variables
   const supabaseUrl = process.env.SUPABASE_URL
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const serviceRoleKey = process.env.SUPABASE_SECRET_KEY
 
   if (!supabaseUrl || !serviceRoleKey) {
-    console.error('Error: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables are required')
-    console.error('Usage: SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... npx tsx scripts/seed-demo-data.ts')
+    console.error('Error: SUPABASE_URL and SUPABASE_SECRET_KEY environment variables are required')
+    console.error('Usage: SUPABASE_URL=... SUPABASE_SECRET_KEY=... npx tsx scripts/seed-demo-data.ts')
     process.exit(1)
   }
 

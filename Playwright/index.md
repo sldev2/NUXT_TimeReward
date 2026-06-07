@@ -4,7 +4,7 @@ This folder contains the standalone Playwright-based end-to-end tests that ship 
 
 The focus here is the Nuxt application running locally at `http://localhost:4000`. This index documents only the Playwright assets that exist inside this repository.
 
-**Before running tests:** start the app from the **repository root** with `npm run dev` (Playwright does not auto-start the dev server here). For `npm run reset-timers`, ensure `NUXT_TimeReward/.env` contains `SUPABASE_URL` (or `NUXT_PUBLIC_SUPABASE_URL`) and `SUPABASE_SERVICE_ROLE_KEY` so `test-utils/reset-timers.ts` can reach Supabase.
+**Before running tests:** start the app from the **repository root** with `npm run dev` (Playwright does not auto-start the dev server here). For `npm run reset-timers`, ensure `NUXT_TimeReward/.env` contains `SUPABASE_URL` (or `NUXT_PUBLIC_SUPABASE_URL`) and `SUPABASE_SECRET_KEY` so `test-utils/reset-timers.ts` can reach Supabase.
 
 ## Prerequisites
 

@@ -16,9 +16,9 @@ SUPABASE_URL=https://your-project-id.supabase.co
 # NOTE: Module expects SUPABASE_KEY, not SUPABASE_ANON_KEY
 SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
-# The "service_role" key (server-side ONLY, bypasses RLS)
+# The service-role / secret key (server-side ONLY, bypasses RLS)
 # NEVER expose this in client-side code!
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SECRET_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 ## Optional and feature-specific variables
@@ -39,7 +39,7 @@ See the repo root **`.env.example`** for the full list and naming (that file is 
 4. Copy:
    - **Project URL** → `SUPABASE_URL`
    - **anon/public key** → `SUPABASE_KEY`
-   - **service_role key** → `SUPABASE_SERVICE_ROLE_KEY` (keep secret!)
+   - **service_role / secret key** → `SUPABASE_SECRET_KEY` (keep secret!)
 
 ## Local development
 
