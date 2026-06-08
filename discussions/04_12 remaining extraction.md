@@ -77,16 +77,16 @@ Snapshot date: **2026-06-07**.
 | `NUXT_STRIPE_PRICE_ID_QUARTERLY` | ✓ | ✓ | ✓ | ~ | `stripePriceIdQuarterly`; plans/checkout |
 | `NUXT_STRIPE_PRICE_ID_YEARLY` | ✓ | ✓ | ✓ | ~ | `stripePriceIdYearly`; plans/checkout |
 | `NUXT_PUBLIC_APP_URL` | ✓ | ✓ | ✓ | ✓ | `public.appUrl`; redirects, legal pages, checkout, register |
-| `NUXT_PUBLIC_SHOW_TEST_USERS` | ✗ | ✓ | comment | ✓ (reserved) | **reserved** — on Vercel `test`; not wired; future landing/auth UI |
-| `NUXT_PUBLIC_SHOW_PHONE_NUMBER` | ✗ | ✓ | comment | ✓ (reserved) | **reserved** — on Vercel `test`; not wired; future landing/contact UI |
-| `NUXT_PUBLIC_HIDE_LANDING_PAGE_COUNTERS` | ✗ | ✓ | comment | ✓ (reserved) | **reserved** — on Vercel `test`; not wired; future landing UI |
-| `BOZ23` | ✓ | ✓ | ✓ | ✗ | `runtimeConfig.boz23`; `registration-policy.get.ts` |
-| `KV_REST_API_URL` | ✓ | ✓ | ✓ | ✗ | `kvRestApiUrl`; `/api/keepalive` |
-| `KV_REST_API_TOKEN` | ✓ | ✓ | ✓ | ✗ | `kvRestApiToken`; `/api/keepalive` |
+| `NUXT_PUBLIC_SHOW_TEST_USERS` | ✓  | ✓ | comment | ✓ (reserved) | **reserved** — on Vercel `test` and local `develop`; not wired; future landing/auth UI |
+| `NUXT_PUBLIC_SHOW_PHONE_NUMBER` | ✓  | ✓ | comment | ✓ (reserved) | **reserved** — on Vercel `test` and local `develop`; not wired; future landing/contact UI |
+| `NUXT_PUBLIC_HIDE_LANDING_PAGE_COUNTERS` | ✓  | ✓ | comment | ✓ (reserved) | **reserved** — on Vercel `test` and local `develop`; not wired; future landing UI |
+| `BOZ23` | ✓ | ✓ | ✓ | ✓ | `runtimeConfig.boz23`; `registration-policy.get.ts` |
+| `KV_REST_API_URL` | ✓ | ✓ | ✓ | ✓ | `kvRestApiUrl`; `/api/keepalive` |
+| `KV_REST_API_TOKEN` | ✓ | ✓ | ✓ | ✓ | `kvRestApiToken`; `/api/keepalive` |
 | `KV_REST_API_READ_ONLY_TOKEN` | ✗ | ✓ | ✗ | ✗ | ✗ — Vercel KV default, unused |
 | `KV_REDIS_URL` | ✗ | ✓ | ✗ | ✗ | ✗ — Vercel KV default, unused |
 | `KV_URL` | ✗ | ✓ | ✗ | ✗ | ✗ — Vercel KV default, unused |
-| `GEOCODING_API_KEY` | ✗ | ✓ | ✗ | ✗ | ✗ — **set-but-unused (gap 3)** |
+| `GEOCODING_API_KEY` | ✗ | ✓ | comment | ✓ (reserved) | **reserved** — on Vercel; not wired; planned geocoding integration |
 | `TURNSTILE_SITE_KEY` | `ph` | ✓ | ✓ | ✓ (reserved) | `public.turnstileSiteKey` **`slot`** — not wired |
 | `TURNSTILE_SECRET_KEY` | `ph` | ✓ | ✓ | ✓ (reserved) | `turnstileSecretKey` **`slot`** — not wired |
 | `RESEND_API_KEY` | `ph` | ✓ | ✓ | ✓ (reserved) | `resendApiKey` **`slot`** — not wired (PRD Phase 3) |
@@ -97,15 +97,154 @@ Snapshot date: **2026-06-07**.
 
 **~** in `ENV-SETUP.md` = covered only by the general "Stripe keys / price IDs" sentence, not named individually.
 
+**`local`** = documented for local dev in `.env.example`; intentionally **not** on Vercel Preview branch `test` (defaults apply on preview).
+
+#### Local-only variables (not on Vercel `test`)
+
+| Variable | local `.env` | Vercel `test` | `.env.example` | `ENV-SETUP.md` | code usage |
+|----------|:---:|:---:|:---:|:---:|---|
+| `TRIAL_DAYS` / `NUXT_TRIAL_DAYS` | ✓ | ✗ | ✓ | ✗ | **reserved** — read only in `app/config/trial.ts` (not wired); live trial = DB default 30d |
+| `TRIAL_BYPASS` / `NUXT_PUBLIC_TRIAL_BYPASS` | ✓ | ✗ | ✓ | ✗ | `app/middleware/subscription.ts` — bypass only when **`import.meta.dev`** and flag `true` (local `npm run dev` only) |
+| `NUXT_SKIP_EMAIL_CONFIRMATION` | ✓ | ✗ | ✓ | ~ | `server/api/auth/register.post.ts` — on preview **defaults false** → normal email-confirmation signup |
+| `ALLOW_DEMO_DATA` | ✓ | ✗ | ✓ | ~ | `server/api/admin/load-demo-data.post.ts` — on preview **off** unless set (`NODE_ENV` is not `development`) |
+| `NUXT_PUBLIC_ALLOW_DEMO_DATA` | ✓ | ✗ | ✓ | ~ | `app/pages/home.vue` — demo button hidden on preview unless set |
+| `UNDER_CONSTRUCTION` | ✓ | ✗ | ✓ | ✗ | Production gate only (`=1`); unset on preview → normal app (intended for `test.myfocusrewards.com`) |
+| `NUXT_PUBLIC_APP_ENV` | ✓ | ✗ | ✓ | ✗ | **reserved** — only referenced in unwired `trial.ts`; `runtimeConfig.public.appEnv` slot unused |
+
+**Extraction decision (2026-06-08):** Keep trial **as-is** — DB default + `subscription` middleware. Keep `trial.ts` documented as reserved helper (Option C in practice; Options A/B in §2a if wired later). Do not remove from repo.
+
+#### Legacy / remove from Vercel
+
+| Variable | local `.env` | Vercel `test` | `.env.example` | `ENV-SETUP.md` | code usage |
+|----------|:---:|:---:|:---:|:---:|---|
+| `NUXT_PUBLIC_SITE_URL` | ✗ | ✓ ⚠ | ✗ | ✗ | **remove** — **zero references** in code; renamed to **`NUXT_PUBLIC_APP_URL`** (see `docs/env naming preference.md`) |
+
+#### `app/config/trial.ts` — helper exists but is not wired
+
+This file is **not “dead” in the sense of broken** — it exports working functions — but **nothing in the app calls them**, so **`TRIAL_DAYS` and `NUXT_PUBLIC_APP_ENV` have no effect on real users today**.
+
+**What actually sets trial length at signup today**
+
+1. Client calls `POST /api/auth/register` (`server/api/auth/register.post.ts`), which creates a Supabase Auth user (`signUp` or admin `createUser`). It does **not** set `trial_end`.
+2. Supabase fires the database trigger **`on_auth_user_created`** → **`handle_new_user()`** (see session notes 2026-02-27), which inserts `user_profiles` (+ `user_settings`).
+3. `user_profiles.trial_end` comes from the **column default** in migration `001_user_profiles.sql`:
+
+   `trial_end TIMESTAMPTZ DEFAULT (NOW() + INTERVAL '30 days')`
+
+4. Later, **`app/middleware/subscription.ts`** reads `trial_end` from the database and compares it to `now` — still no import of `trial.ts`.
+
+So every new user gets **30 days** from Postgres unless you change the DB default or update the row after signup.
+
+**What `trial.ts` would do if it were wired**
+
+| Export | Purpose |
+|--------|---------|
+| `getTrialConfig()` | Returns `{ days, ms }` from `TRIAL_DAYS` / `NUXT_TRIAL_DAYS`, else 1 day in dev, 30 days if `NUXT_PUBLIC_APP_ENV=staging`, else 30 days “production” |
+| `getTrialEndISOString()` | `now + getTrialConfig().ms` as ISO string for storage in `user_profiles.trial_end` |
+
+**What “wire registration to use it” means (concrete options)**
+
+Pick one place to **write** `trial_end` using `getTrialEndISOString()` instead of relying only on the 30-day SQL default:
+
+| Approach | Where to change | Notes |
+|----------|-----------------|-------|
+| **A. Server after signup** | `register.post.ts` | After auth user exists, use **service role** to `update user_profiles set trial_end = …` (profile row must exist — today the DB trigger creates it on auth insert). |
+| **B. DB trigger** | New Supabase migration | Replace fixed `INTERVAL '30 days'` with app-passed metadata (e.g. store desired days in `raw_user_meta_data` at signup, trigger reads it). Env vars like `TRIAL_DAYS` still wouldn’t reach Postgres unless the app passes them in metadata. |
+| **C. Delete `trial.ts`** | Remove file + env vars | Keep single source of truth: SQL default (and/or change default via migration for staging vs prod). |
+
+**Sequence flows (when implemented)**
+
+*Shared later step:* `subscription` middleware reads `user_profiles.trial_end` and allows or redirects to `/subscription/expired`.
+
+**Option A — server overwrites `trial_end` after trigger (uses `trial.ts`)**
+
+```mermaid
+sequenceDiagram
+  participant Client
+  participant Register as POST /api/auth/register
+  participant Trial as app/config/trial.ts
+  participant Auth as Supabase Auth
+  participant Trigger as handle_new_user trigger
+  participant DB as user_profiles
+  participant Sub as subscription middleware
+
+  Client->>Register: signUp body
+  Register->>Trial: getTrialEndISOString()
+  Note over Trial: TRIAL_DAYS / APP_ENV / dev → days
+  Trial-->>Register: ISO trial_end
+  Register->>Auth: signUp or admin.createUser
+  Auth->>Trigger: on_auth_user_created
+  Trigger->>DB: INSERT profile (trial_end = SQL default 30d)
+  Register->>DB: UPDATE trial_end = computed ISO (service role)
+  Note over Register,DB: Overwrites 30-day default with env-based length
+  Client->>Sub: navigate protected route
+  Sub->>DB: SELECT trial_end
+  Sub->>Sub: allow access if trial_end > now
+```
+
+**Option B — app passes duration in metadata; trigger writes `trial_end` (env → app → DB)**
+
+```mermaid
+sequenceDiagram
+  participant Client
+  participant Register as POST /api/auth/register
+  participant Trial as app/config/trial.ts
+  participant Auth as Supabase Auth
+  participant Trigger as handle_new_user trigger
+  participant DB as user_profiles
+  participant Sub as subscription middleware
+
+  Client->>Register: signUp body
+  Register->>Trial: getTrialConfig().days
+  Trial-->>Register: e.g. 1 or 30
+  Register->>Auth: signUp / createUser + user_metadata.trial_days
+  Auth->>Trigger: on_auth_user_created (NEW row + metadata)
+  Trigger->>Trigger: read raw_user_meta_data.trial_days
+  Trigger->>DB: INSERT profile trial_end = NOW() + trial_days
+  Note over Trigger,DB: Postgres owns final timestamp — no post-signup UPDATE
+  Client->>Sub: navigate protected route
+  Sub->>DB: SELECT trial_end
+  Sub->>Sub: allow if trial_end > now
+```
+
+**Option C — delete `trial.ts`; SQL default (or migration) is sole source**
+
+```mermaid
+sequenceDiagram
+  participant Client
+  participant Register as POST /api/auth/register
+  participant Auth as Supabase Auth
+  participant Trigger as handle_new_user trigger
+  participant DB as user_profiles
+  participant Sub as subscription middleware
+
+  Client->>Register: signUp body
+  Note over Register: No trial.ts — no TRIAL_DAYS env in app
+  Register->>Auth: signUp or admin.createUser
+  Auth->>Trigger: on_auth_user_created
+  Trigger->>DB: INSERT profile
+  Note over DB: trial_end from column DEFAULT (NOW + 30 days)
+  Note over DB: Staging vs prod length via migration per Supabase project
+  Client->>Sub: navigate protected route
+  Sub->>DB: SELECT trial_end
+  Sub->>Sub: allow if trial_end > now
+```
+
+**Policy:** **`TRIAL_DAYS` / `NUXT_PUBLIC_APP_ENV`** stay in `.env.example` as reserved until registration wires `trial.ts` (Options A/B in §2a). They do not change preview or prod behavior today. **`TRIAL_BYPASS`** is wired for local dev only.
+
+**Related:** `TRIAL_BYPASS` **is** wired (`subscription.ts`) but only applies when **`import.meta.dev`** (local dev), so it correctly stays off Vercel preview without any env var there.
+
 #### Gaps / actions surfaced (feed 2b/2c)
 
 1. **`SUPABASE_SECRET_KEY` migration (2026-06-07):** Vercel dev/test/prod now use `SUPABASE_SECRET_KEY` (replaces `SUPABASE_SERVICE_ROLE_KEY`). Code updated: `nuxt.config.ts` → `supabaseSecretKey`, webhook, scripts, Playwright reset-timers.
 2. **`NUXT_PUBLIC_SHOW_TEST_USERS` / `_SHOW_PHONE_NUMBER` / `_HIDE_LANDING_PAGE_COUNTERS` — resolved (2026-06-07):** Keep on Vercel `test`; label **reserved** in 2b. Documented in `.env.example` (commented) and `ENV-SETUP.md`. No code wiring until a future UI phase — inert today by design, not an oversight.
-3. **`GEOCODING_API_KEY`** set on all envs but unused in code → **reserved or remove**.
+3. **`GEOCODING_API_KEY` — resolved (2026-06-07):** Keep on Vercel; label **reserved** in 2b. Documented in `.env.example` (commented) and `ENV-SETUP.md`. No code wiring yet — inert by design until geocoding is implemented.
 4. **KV defaults** (`KV_REST_API_READ_ONLY_TOKEN`, `KV_REDIS_URL`, `KV_URL`) auto-added by Vercel KV; harmless. Only `KV_REST_API_URL` + `KV_REST_API_TOKEN` are used. Leave as-is.
-5. **`KV_REST_API_*` and `BOZ23`** are used + in `.env.example` but **not described in `ENV-SETUP.md`** → add short notes in **2c**.
-6. **Reserved (slot-only or documented, not wired):** `NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, **`NUXT_PUBLIC_SHOW_*` / `_HIDE_LANDING_PAGE_COUNTERS`**, `TURNSTILE_*`, `RESEND_API_KEY`, `EMAIL_*` — intentional; label in **2b**.
+5. **`KV_REST_API_*` and `BOZ23` — resolved (2026-06-07):** Short notes added to `ENV-SETUP.md`.
+6. **Reserved (slot-only or documented, not wired):** `NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, **`NUXT_PUBLIC_SHOW_*` / `_HIDE_LANDING_PAGE_COUNTERS`**, **`GEOCODING_API_KEY`**, `TURNSTILE_*`, `RESEND_API_KEY`, `EMAIL_*` — intentional; label in **2b**.
 7. **`NUXT_STRIPE_PRICE_ID_DEFAULT` removed (2026-06-07):** Legacy nameless checkout fallback deleted; `POST /api/stripe/checkout` requires `plan` or `priceId`. Remove from local `.env` / Vercel if still set.
+8. **`NUXT_PUBLIC_SITE_URL` on Vercel `test` (2026-06-07):** Legacy duplicate of **`NUXT_PUBLIC_APP_URL`** — **remove from Vercel**; app never reads `SITE_URL`. Keep `NUXT_PUBLIC_APP_URL` on preview.
+9. **Local-only vars (2026-06-07):** `TRIAL_*`, `NUXT_SKIP_EMAIL_CONFIRMATION`, demo flags, `UNDER_CONSTRUCTION`, `NUXT_PUBLIC_APP_ENV` — documented in §2a “Local-only” table; absence on Vercel `test` is intentional. See **`trial.ts` not wired** note for trial duration behavior.
 
 ### 3. External integrations review
 

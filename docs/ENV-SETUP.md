@@ -37,7 +37,15 @@ See the repo root **`.env.example`** for the full list and naming (that file is 
 | `NUXT_PUBLIC_SHOW_PHONE_NUMBER` | Show phone number on landing/contact |
 | `NUXT_PUBLIC_HIDE_LANDING_PAGE_COUNTERS` | Hide public counter widgets on landing |
 
-**App URL:** `NUXT_PUBLIC_APP_URL` (see `.env.example`) for redirects and absolute links.
+**Geocoding (`GEOCODING_API_KEY`):** May be set on Vercel but is **not wired** in app code yet. Safe to omit locally until you implement geocoding. See commented entry in `.env.example`.
+
+**App URL:** Use **`NUXT_PUBLIC_APP_URL`** only (not `NUXT_PUBLIC_SITE_URL`, which is legacy and unused). See `.env.example` for redirects, checkout return URLs, and legal page links.
+
+**Local-only (not on Vercel `test`):** `TRIAL_DAYS`, `TRIAL_BYPASS`, `NUXT_SKIP_EMAIL_CONFIRMATION`, `ALLOW_DEMO_DATA`, `NUXT_PUBLIC_ALLOW_DEMO_DATA`, `UNDER_CONSTRUCTION`, `NUXT_PUBLIC_APP_ENV` — set in local `.env` for dev; preview uses code/DB defaults. Trial length at signup is **30 days from the database default**; `app/config/trial.ts` is **reserved, not wired** — see **`discussions/04_12 remaining extraction.md` §2a**.
+
+**BOZ23:** When `BOZ23=1`, new registrations must include `boz23` in the username (`server/api/auth/register.post.ts`, `/api/auth/registration-policy`). Set on Vercel `test` for gated test signups.
+
+**Keepalive / Vercel KV:** `KV_REST_API_URL` + `KV_REST_API_TOKEN` power `GET /api/keepalive` (Upstash ping). Other `KV_*` vars on Vercel are auto-provisioned defaults and unused.
 
 ## Getting Your Supabase Credentials
 

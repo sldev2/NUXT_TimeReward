@@ -1,7 +1,11 @@
 /**
  * Trial Duration Configuration
- * 
- * Configures trial period durations per environment.
+ *
+ * NOT WIRED: nothing imports this module today. New users get trial_end from the
+ * user_profiles SQL default (30 days) via handle_new_user — see
+ * discussions/04_12 remaining extraction.md §2a (trial.ts).
+ *
+ * Configures trial period durations per environment when wired (Options A/B in §2a).
  * PRD Section 17.4.1 specifies:
  * - Development: 1 day
  * - Staging: 30 days
