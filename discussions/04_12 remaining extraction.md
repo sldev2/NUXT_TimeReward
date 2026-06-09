@@ -281,17 +281,17 @@ sequenceDiagram
 
 - [x] `npm install` (repo root) — see Progress log
 - [x] `npm run build` (repo root) — see Progress log
-- [ ] `npm run dev` (repo root) — confirm clean startup
+- [x] `npm run dev` (repo root) — confirm clean startup
 
 **Manual smoke (browser):**
 
-- [ ] Landing page loads
-- [ ] Login page loads
-- [ ] Register page loads
-- [ ] Authenticated navigation reaches `/home`
-- [ ] Settings page loads
-- [ ] Rewards page loads
-- [ ] Connection state UI behaves normally
+- [x] Landing page loads
+- [x] Login page loads
+- [x] Register page loads
+- [x] Authenticated navigation reaches `/home`
+- [x] Settings page loads
+- [x] Rewards page loads
+- [x] Connection state UI behaves normally
 
 ### 8. Database / app behavior checks
 
