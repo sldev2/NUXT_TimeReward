@@ -3,7 +3,7 @@
 ## Goal
 Use this as the short execution checklist for extracting `NUXT_TimeReward` into its own standalone project.
 
-This does **not** replace `junk/extraction guide.md`; it is the condensed version.
+This does **not** replace the long-form [`extraction guide.md`](./extraction%20guide.md); it is the condensed version.
 
 ## Environment scope
 
@@ -57,7 +57,7 @@ npm run dev
 - Auth callback: `nuxt.config.ts` uses `/confirm` and `app/pages/confirm.vue` exists (resolved).
 
 ## Documentation cleanup
-- Rewrite `NUXT_TimeReward/docs/README.md` for standalone use.
+- Rewrite `docs/README.md` for standalone use.
 - Remove parent-repo references from core docs.
 - `Playwright/index.md` is standalone (no `Playwright2026` dependency); `baseURL` is `http://localhost:4000` in `playwright.config.ts`.
 - Declare `docs/REARCHITECT/PRD for NUXT.md` the canonical standalone PRD for the extracted repo.
@@ -108,7 +108,7 @@ npm run build
   - demo reset works when enabled
 
 ## Playwright
-- Run `npm install` in `NUXT_TimeReward/Playwright`.
+- Run `npm install` in `Playwright/`.
 - Confirm Playwright assumptions still match the extracted app.
 - Update stale test-doc references.
 - Remember:

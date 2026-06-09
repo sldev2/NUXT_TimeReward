@@ -29,7 +29,7 @@ If the app is still being stabilized, a sensible sequence is:
 2. Validate env vars, auth, redirects, database target, and deployment behavior there
 3. Only after that, designate the branch you want as **production branch** and attach the main production domain
 
-That is especially sensible for `NUXT_TimeReward` while extraction/validation work is still finishing.
+That is especially sensible for TimeReward while the test preview environment is still being validated.
 
 ## When production-first makes sense
 

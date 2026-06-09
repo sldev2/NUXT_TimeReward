@@ -6,4 +6,10 @@ Files in this folder were moved from `docs/` during extraction cleanup. They com
 
 `CHANGELOG.md` remains at repo root. Its long migration appendix was replaced by a short **Historical context** section that points at `supabase/migrations/` and the `docs/historical/` tree.
 
+| Document | Purpose |
+|----------|---------|
+| `Group B Rewards Implementation Plan.md` | Deferred Group B reward properties |
+| `PRD - Nuxt Supabase Migration.Rewards Deltas March11.md` | Reward deltas vs legacy PRD |
+| `legacy-blazor-prorated-rewards.md` | Legacy Blazor proration/combining behavior (archived from `discussions/`) |
+
 Archived session logs: `../session-notes/` (moved from `docs/` on 2026-05-10).

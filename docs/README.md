@@ -19,13 +19,13 @@ The codebase currently runs on `nuxt ^3.20.2` and is configured with `future.com
    npm install
    ```
 
-2. Create a local `.env` file and fill in the required values.
+2. Create a local `.env` file at the **repository root** and fill in the required values.
    Start with:
-   - `../.env.example`
+   - `.env.example` (repo root)
    - `./ENV-SETUP.md`
 
 3. Apply the database migrations from:
-   - `../supabase/migrations`
+   - `supabase/migrations/` (repo root)
 
 4. Start the development server:
    ```bash

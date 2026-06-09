@@ -28,7 +28,7 @@ When commands are replayed from the offline queue on reconnect, the server RPCs 
 
 **Complexity:** Moderate — RPC parameter additions + server-side drift validation. No schema changes. Multi-device conflict resolution needs careful design.
 
-**Discussion:** See `NUXT_TimeReward/discussions/lost offline time.md` for full analysis.
+**Discussion:** See `discussions/lost offline time.md` for full analysis.
 
 ---
 
@@ -56,7 +56,7 @@ If this project keeps email-based auth flows, configure Supabase Auth to use Res
 
 ### 5. Optional demo/test username gating
 
-A future feature may reintroduce environment-specific login restrictions for demo/test deployments. If added, this should be treated as a freshly specified feature rather than reconstructed from the parent repo.
+A future feature may reintroduce environment-specific login restrictions for demo/test deployments. If added, this should be treated as a freshly specified feature rather than reconstructed from legacy monorepo behavior.
 
 Questions to settle before implementation:
 

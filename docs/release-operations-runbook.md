@@ -46,7 +46,7 @@ Ensure the following environment variables are configured in Vercel:
    1. Log in to Vercel Dashboard
    2. Import Git Repository
    3. Select the repository and branch
-   4. Configure root directory: NUXT_TimeReward
+   4. Configure root directory: `.` (repository root)
    5. Framework Preset: Nuxt.js
    ```
 
@@ -64,8 +64,8 @@ Ensure the following environment variables are configured in Vercel:
 # Install Vercel CLI
 npm i -g vercel
 
-# Navigate to project
-cd NUXT_TimeReward
+# Navigate to repository root
+cd /path/to/NUXT_TimeReward
 
 # Deploy to preview
 vercel
@@ -180,7 +180,7 @@ When intentionally upgrading dependencies:
 **Fix**:
 1. Open [Supabase Dashboard](https://supabase.com/dashboard) → your project → **Settings** → **API**.
 2. Copy the **Project URL** (e.g. `https://abcdefgh.supabase.co`).
-3. In `NUXT_TimeReward/.env`, set `SUPABASE_URL=` to that exact URL (no trailing slash). If using `NUXT_PUBLIC_SUPABASE_URL` for client, set that too.
+3. In `.env` at the repository root, set `SUPABASE_URL=` to that exact URL (no trailing slash). If using `NUXT_PUBLIC_SUPABASE_URL` for client, set that too.
 4. Restart the Nuxt dev server (`npm run dev`).
 5. If the URL is correct, check network/DNS (e.g. `nslookup your-project-ref.supabase.co` in a terminal or try another network).
 
@@ -238,7 +238,7 @@ curl -X POST http://localhost:4000/api/admin/load-demo-data \
 
 ### Option 3: CLI Script (Multiple Users)
 ```bash
-cd NUXT_TimeReward
+# From repository root
 SUPABASE_URL=... SUPABASE_SECRET_KEY=... npx tsx scripts/seed-demo-data.ts
 ```
 

@@ -1,5 +1,7 @@
 # Extraction Guide
 
+> **New developers:** start at [`docs/README.md`](../README.md) and [`docs/ENV-SETUP.md`](../ENV-SETUP.md). This guide is close-out meta for extraction work only; provenance notes below are historical.
+
 ## Purpose
 This guide is for the remaining work needed to make `NUXT_TimeReward` stand on its own, other than physically copying the `NUXT_TimeReward` folder and its contents.
 
@@ -48,9 +50,9 @@ The standalone app depends on environment variables and external services.
 
 Use these files as the starting point:
 
-- `NUXT_TimeReward/.env.example`
-- `NUXT_TimeReward/docs/ENV-SETUP.md`
-- `NUXT_TimeReward/vercel.json`
+- `.env.example`
+- `docs/ENV-SETUP.md`
+- `vercel.json`
 
 Do these tasks:
 
@@ -77,7 +79,7 @@ The extracted app is not self-contained unless the database side comes with it.
 You need to:
 
 - decide whether the standalone app uses a brand-new Supabase project or an existing one
-- apply the migrations in `NUXT_TimeReward/supabase/migrations`
+- apply the migrations in `supabase/migrations`
 - verify Auth, Realtime, tables, and RPCs are all present in the destination project
 
 Minimum database-side verification:
@@ -95,7 +97,7 @@ Minimum database-side verification:
   - `get_email_by_username`
 
 ### 5. [x] Decide the fate of the current `.env`
-There is already a real `.env` inside `NUXT_TimeReward`.
+There is already a real `.env` at the repository root.
 
 For extraction:
 
@@ -147,8 +149,10 @@ Human: decide which integrations are on per environment. **Reference:** **Extern
 
 ## Nice-to-have cleanup tasks
 
-### 13. [~] Trim parent-project language from docs
-Search the extracted repo for wording like:
+### 13. [x] Trim parent-project language from docs
+Completed (2026-06-07): onboarding path normalized in `docs/README.md`, `docs/ENV-SETUP.md`, PRD paths, release runbook, and related files. Intentional historical wording kept under `docs/historical/` and session notes.
+
+Search hints used:
 
 - migration
 - parent project
@@ -156,7 +160,7 @@ Search the extracted repo for wording like:
 - remaining migration work
 - subfolder until separation
 
-Not all of it is wrong, but it will be noisy once the app is standalone.
+Not all hits were removed — SQL migrations, archived notes, and provenance sections were kept where appropriate.
 
 ### 14. [ ] Simplify app-specific documentation
 After extraction, it may help to consolidate:
@@ -217,7 +221,7 @@ The Playwright suite is a separate work area inside the app.
 
 After extraction:
 
-- run `npm install` inside `NUXT_TimeReward/Playwright`
+- run `npm install` inside `Playwright/`
 - confirm its environment assumptions still point to the extracted app
 - update any stale docs references
 

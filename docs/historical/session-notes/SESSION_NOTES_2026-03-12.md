@@ -62,7 +62,7 @@ Fixed critical bug where Start/Stop buttons would go stale after ~1 hour (Supaba
 
 ## Research: Parent Project Prorated Reward Combining
 
-Analyzed how the parent Blazor project handles partial/prorated rewards. Key findings documented in `discussions/parent prj - combining partial prorated rewards.md`:
+Analyzed how the parent Blazor project handles partial/prorated rewards. Key findings documented in `docs/historical/migration/legacy-blazor-prorated-rewards.md`:
 
 - Parent uses `IsProrated`, `IsTimed`, `ExpiresAfter` fields (all deferred as Group B in NUXT)
 - Prorated amount = `TimedReward * (ProgressPercentage / 100)` — linear scaling

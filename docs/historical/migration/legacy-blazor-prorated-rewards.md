@@ -1,8 +1,10 @@
-# How Prorated Rewards Work in the Parent Blazor Project
+# Legacy Blazor: Prorated and Combined Rewards
+
+> Archived reference moved from `discussions/` during extraction doc cleanup (2026-06-07). Compares legacy Blazor behavior to the Nuxt app’s deferred Group B work.
 
 ## Core Concept
 
-The parent project has three fields on `UserReward` that the NUXT migration doesn't have yet (deferred as "Group B"):
+The legacy Blazor app has three fields on `UserReward` that the Nuxt app does not have yet (deferred as "Group B"):
 
 - **`IsProrated`** (bool) — whether partial progress earns a proportional reward
 - **`IsTimed`** (bool) — whether the reward has a time-based value (e.g., "30 min of gaming")
@@ -84,14 +86,14 @@ The `BuildExpires` method does the combining:
 
 ## The Key Design Decision: "If a user does not use a combined reward before part of it expires"
 
-The parent project handles this **by not actually combining banked rewards into a single merged record**. Instead:
+The legacy Blazor app handles this **by not actually combining banked rewards into a single merged record**. Instead:
 
 - Each period's banked reward remains a separate `UserBankedReward` row in the database with its own `ExpiredOn` date
 - `BuildExpires` merely **presents** them together in the UI by adding old rewards' `CompleteRewards` and `PartialRewards` to the current period's display lists
 - When an old period's `ExpiredOn` passes, that `UserBankedReward` simply stops appearing (filtered out by `ExpiredOn > curTime`)
 - The unexpired parts (from other periods) continue to appear because they have their own independent `ExpiredOn` dates
 
-**In other words: the parent project avoids the combining-expiration problem entirely by never actually merging records.** Each period's reward lives and dies independently. The "combining" is purely a UI/presentation concern — multiple rewards from different periods are shown together in the same list, but each retains its own expiration lifecycle.
+**In other words: the legacy app avoids the combining-expiration problem entirely by never actually merging records.** Each period's reward lives and dies independently. The "combining" is purely a UI/presentation concern — multiple rewards from different periods are shown together in the same list, but each retains its own expiration lifecycle.
 
 ## The UI Presentation
 
@@ -103,7 +105,7 @@ Each partial reward shows: `Prorated Length: X` (e.g., "Prorated Length: 18m")
 
 ## What NUXT Is Missing (Group B)
 
-The NUXT migration currently has none of this:
+The Nuxt app currently has none of this:
 
 | Feature | Blazor | NUXT |
 |---------|--------|------|
@@ -115,8 +117,8 @@ The NUXT migration currently has none of this:
 | 10% lock threshold | `Locked` property | Missing |
 | `Progress` on `CashedInReward` | Tracks how much was cashed | Missing |
 
-These are all documented as deferred "Group B" features in `NUXT_TimeReward/docs/historical/migration/Group B Rewards Implementation Plan.md`.
+These are all documented as deferred "Group B" features in [`Group B Rewards Implementation Plan.md`](Group%20B%20Rewards%20Implementation%20Plan.md).
 
 ## Bottom Line
 
-The parent project's design neatly sidesteps the expiration-of-combined-rewards problem. It never actually merges reward records — it keeps each period's reward as a separate database row with its own independent expiration date. The "combining" is purely a read-time presentation layer that collects all non-expired rewards for display. When part of a combined view expires, only that specific period's row disappears; everything else is unaffected.
+The legacy Blazor design neatly sidesteps the expiration-of-combined-rewards problem. It never actually merges reward records — it keeps each period's reward as a separate database row with its own independent expiration date. The "combining" is purely a read-time presentation layer that collects all non-expired rewards for display. When part of a combined view expires, only that specific period's row disappears; everything else is unaffected.

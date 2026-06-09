@@ -260,7 +260,7 @@ sequenceDiagram
 **Scopes:**
 
 - [x] **App/runtime code (`app/`):** checked for noisy setup-only phrasing (e.g. parent directory, subfolder until separation); clean for that pass.
-- [ ] **Docs / onboarding path:** optional pass to reduce confusing “parent / migration” wording outside intentional historical docs (session notes, `docs/historical/`, PRD lineage). *Search hints:* `migration`, `parent project`, `parent directory`, `remaining migration work`, `subfolder until separation` — not every hit should be removed.
+- [x] **Docs / onboarding path:** optional pass to reduce confusing “parent / migration” wording outside intentional historical docs (session notes, `docs/historical/`, PRD lineage). *Search hints:* `migration`, `parent project`, `parent directory`, `remaining migration work`, `subfolder until separation` — not every hit should be removed. *(2026-06-07: `docs/README.md`, `ENV-SETUP.md`, PRD paths, runbook, checklist; prorated-rewards note → `docs/historical/migration/legacy-blazor-prorated-rewards.md`.)*
 
 ### 5. Optional documentation simplification
 
@@ -338,3 +338,4 @@ If the goal is to finish extraction efficiently, the next highest-value order is
 
 - **2026-04-24:** Repo-root `npm install` and `npm run build` succeeded; `Playwright/` `npm install` succeeded. Manual browser smoke and Supabase project checks remain **human** tasks—see `docs/EXTRACTION/extraction guide.checklist.md` and `docs/ENV-SETUP.md`.
 - **2026-05-10:** Checkboxes + status pass; `app/` language pass; no `junk/`; session notes archived to `docs/historical/session-notes/`; `CHANGELOG.md` migration appendix pruned, Fixed/Removed merge corruption repaired, pointers to `supabase/migrations/` and historical docs added.
+- **2026-06-07:** §4 docs/onboarding pass — repo-root paths in `docs/README.md`, `ENV-SETUP.md`, PRD, runbook, extraction docs; `_FORLATER.md` paths; prorated-rewards note → `docs/historical/migration/legacy-blazor-prorated-rewards.md`.

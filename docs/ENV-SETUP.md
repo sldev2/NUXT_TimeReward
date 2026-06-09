@@ -1,6 +1,6 @@
 # Environment Variables Setup
 
-Create a `.env.development` file in the `NUXT_TimeReward` root folder for local development.
+Create a `.env.development` file at the repository root for local development.
 
 ## Required Environment Variables (Phase 1)
 
@@ -106,7 +106,7 @@ See the repo root **`.env.example`** for the full list and naming (that file is 
 
 ## Local development
 
-From the **repository root** (`NUXT_TimeReward/`), create `.env` (or `.env.development` if you prefer that convention):
+From the **repository root**, create `.env` (or `.env.development` if you prefer that convention):
 
 ```bash
 cp .env.example .env
@@ -129,7 +129,7 @@ Before calling extraction “done”, align what you use locally with deployment
 
 ## Post-extraction Supabase verification
 
-Use the target Supabase project (not the parent repo’s project unless you intentionally share it):
+Use **this repo’s** Supabase project (`time-reward-test` for preview, your local project for dev)—not a legacy or shared project unless intentional:
 
 1. Apply migrations: `supabase/migrations/` (see [docs/README.md](README.md) quick start).
 2. **Auth:** register, email confirmation if enabled, username login, `/confirm` after magic link if applicable.

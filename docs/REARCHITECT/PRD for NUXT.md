@@ -43,7 +43,7 @@ Its current implementation is centered on:
 ## 4. Current stack
 
 ### 4.1 Framework and libraries
-Current app dependencies from `NUXT_TimeReward/package.json`:
+Current app dependencies from `package.json`:
 
 - Nuxt `^3.20.2`
 - `@nuxtjs/supabase` `^2.0.3`
@@ -52,7 +52,7 @@ Current app dependencies from `NUXT_TimeReward/package.json`:
 - `@vueuse/nuxt` `^14.1.0`
 - Stripe `^20.3.0`
 
-The app currently runs on Nuxt 3 with `future.compatibilityVersion: 4` in `NUXT_TimeReward/nuxt.config.ts`.
+The app currently runs on Nuxt 3 with `future.compatibilityVersion: 4` in `nuxt.config.ts`.
 
 ### 4.2 Nuxt structure
 The app follows standard Nuxt structure concepts:
@@ -265,7 +265,7 @@ Current reward behavior includes:
 - recurring reward periods with period-boundary logic used when calculating earned, banked, and claimed progress
 - separate tracking of banked rewards and cashed-in rewards, including direct cash-ins versus cash-ins linked to previously banked rewards
 
-Required reward semantics inherited from the parent project include:
+Required reward semantics inherited from the legacy Blazor product include:
 
 - expiring rewards via an `ExpiresAfter` concept that controls how long a banked reward remains claimable after the period ends
 - timed rewards via a reward-duration field that defines what the user earns when the reward is achieved
@@ -510,7 +510,7 @@ It should also distinguish clearly between:
 - current feature implementation across auth, timers, rewards, breaks, settings, and subscriptions
 - current Supabase migrations
 - current Playwright test assets
-- app-specific documentation under `NUXT_TimeReward/docs`
+- app-specific documentation under `docs/`
 
 The most accurate way to describe the app at extraction time is:
 
