@@ -251,8 +251,8 @@ sequenceDiagram
 **Policy + behavior:**
 
 - [x] Stripe — **keep** on dev + test; “not configured” behavior documented in `docs/ENV-SETUP.md` (detail: `discussions/05_28 Section 3.md`)
-- [ ] Resend — keep / disable / document
-- [ ] Cloudflare Turnstile — keep / disable / document  
+- [x] Resend — **keep** on Vercel; implement PRD Phases 1–3; vars **reserved** until wired; `EMAIL_AUTOMATION_*` until Phase 4 — documented in `docs/ENV-SETUP.md` (PRD: `docs/PRD for Resend use.md`)
+- [x] Cloudflare Turnstile — **optional / off**; keys may stay on Vercel as **reserved**; not wired — documented in `docs/ENV-SETUP.md`
   *Goal: no ambiguous partial config; graceful failure where a feature is off.*
 
 ### 4. Trim remaining parent-project language

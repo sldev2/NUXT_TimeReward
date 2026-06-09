@@ -46,7 +46,35 @@ See the repo root **`.env.example`** for the full list and naming (that file is 
 
 **Verify locally or on test:** step-by-step drills in [`discussions/05_28 Section 3.md`](../discussions/05_28%20Section%203.md).
 
-**Resend / Cloudflare Turnstile:** Slots exist on `runtimeConfig` in `nuxt.config.ts`, and keys may appear in `.env.example`, but **there is no current usage in `app/` or `server/` code paths**—treat them as reserved for future work unless you wire them in.
+### Resend (auth email + future transactional mail)
+
+**Extraction policy (dev + test):** **Keep** env vars on Vercel; implement per [`docs/PRD for Resend use.md`](PRD%20for%20Resend%20use.md) (Phases **1–3** first). **`EMAIL_AUTOMATION_*` reserved** until Phase 4 (no dispatcher in app today). Production Resend/SMTP reconciliation deferred until launch.
+
+**Not implemented in app code yet:** no `resend` npm package, no `EmailDeliveryService`, no `/api/auth/resend-verification`. Setting `RESEND_API_KEY` or `EMAIL_FROM_*` in `.env` or Vercel **does not change app behavior** until PRD phases land.
+
+**Auth email today (regardless of Resend vars on Vercel):**
+
+| Setting | Behavior |
+|---------|----------|
+| `NUXT_SKIP_EMAIL_CONFIRMATION=true` (typical local `.env`) | `POST /api/auth/register` creates a **pre-confirmed** user via admin API — **no** Supabase confirmation email |
+| `NUXT_SKIP_EMAIL_CONFIRMATION=false` or unset on preview | Normal `signUp` → Supabase sends confirmation email via **Supabase Auth SMTP** (dashboard default until Phase 1 custom SMTP) |
+| Resend vars set, PRD not implemented | Same as above — vars are **inert** in code |
+
+**Target after PRD Phase 1 (human + Supabase dashboard):** Supabase **Authentication → Email → Custom SMTP** → Resend (`smtp.resend.com:587`); auth mail from `EMAIL_FROM_ADDRESS`. See [`docs/Resend Use by Environment.md`](Resend%20Use%20by%20Environment.md) and [`docs/05_23 current auth email rate limit.md`](05_23%20current%20auth%20email%20rate%20limit.md).
+
+**When transactional automation is “off” (now and until Phase 4):** `EMAIL_AUTOMATION_ENABLED` unset or `false` — expected; no background email queue or Nitro dispatcher (nothing to fail).
+
+**Env vars (Vercel inventory):** `RESEND_API_KEY`, `EMAIL_FROM_ADDRESS`, `EMAIL_FROM_NAME` — **reserved** until PRD wiring; `EMAIL_AUTOMATION_ENABLED`, `EMAIL_DISPATCH_INTERVAL_MS` — **reserved until Phase 4**.
+
+### Cloudflare Turnstile (bot protection)
+
+**Extraction policy (dev + test):** **Optional / off** — keys may stay on Vercel for future use; **not required** for extraction, Resend Phases 1–3, or current auth/subscription flows.
+
+**Not wired in code:** `TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` map to empty `runtimeConfig` slots only (`public.turnstileSiteKey`, `turnstileSecretKey`). No Turnstile widget in `app/`, no server-side token verification.
+
+**When Turnstile is unset or set:** **No difference** — app behavior is unchanged. Safe to omit locally; safe to leave on Vercel as **reserved**.
+
+**When to wire:** only if a feature needs bot protection (e.g. forgot-password or public forms), per product decision — not an extraction blocker.
 
 **Reserved UI flags (Vercel `test`; not wired yet):** These may be set on the test preview in Vercel but are **inactive** until landing/auth UI reads them. Safe to omit locally. See commented entries in `.env.example`.
 
@@ -127,9 +155,9 @@ Changing host means replacing or removing this file and re-documenting build/out
 
 ## External integrations (summary)
 
-| Integration | Wired in code? | If unset |
-|-------------|----------------|----------|
+| Integration | Wired in code? | If unset / not implemented |
+|-------------|----------------|----------------------------|
 | Supabase | Yes (`@nuxtjs/supabase`, server routes) | App does not function for auth/data |
-| Stripe | Yes (`server/api/stripe/*`, subscription pages) | Checkout/webhook routes fail with explicit configuration errors |
-| Resend | No current usage | N/A |
-| Turnstile | No current usage | N/A |
+| Stripe | Yes (`server/api/stripe/*`, subscription pages) | Plans: static placeholders; checkout/webhook: explicit 500 (see Stripe section above) |
+| Resend | **No** — PRD Phases 1–3 not implemented | Vars inert; auth uses Supabase + `NUXT_SKIP_EMAIL_CONFIRMATION` (see Resend section above) |
+| Turnstile | **No** | No effect — optional reserved keys only (see Turnstile section above) |
