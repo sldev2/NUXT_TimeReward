@@ -250,7 +250,7 @@ sequenceDiagram
 
 **Policy + behavior:**
 
-- [ ] Stripe — keep / disable / document “not configured” behavior
+- [x] Stripe — **keep** on dev + test; “not configured” behavior documented in `docs/ENV-SETUP.md` (detail: `discussions/05_28 Section 3.md`)
 - [ ] Resend — keep / disable / document
 - [ ] Cloudflare Turnstile — keep / disable / document  
   *Goal: no ambiguous partial config; graceful failure where a feature is off.*

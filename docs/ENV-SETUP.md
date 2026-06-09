@@ -25,7 +25,26 @@ SUPABASE_SECRET_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 See the repo root **`.env.example`** for the full list and naming (that file is the contract Nuxt and scripts were written against).
 
-**Stripe (subscriptions / checkout):** Used when `NUXT_STRIPE_SECRET_KEY`, price IDs, and related keys are set. Server routes under `server/api/stripe/` return clear errors if Stripe is not configured (for example webhook responds that Stripe is not configured).
+### Stripe (subscriptions / checkout)
+
+**Extraction policy (dev + test):** **Keep** — Stripe is active on Vercel Preview branch **`test`** and via local `.env`. Production Stripe is deferred until launch.
+
+**Required when testing checkout:** `NUXT_STRIPE_SECRET_KEY`, `NUXT_STRIPE_WEBHOOK_SECRET`, price IDs (`NUXT_STRIPE_PRICE_ID_MONTHLY` / `_QUARTERLY` / `_YEARLY`), and `NUXT_PUBLIC_APP_URL`. Checkout requires `plan` or `priceId` in the POST body (no default price fallback).
+
+**When Stripe is not configured** (`NUXT_STRIPE_SECRET_KEY` unset):
+
+| Route | Behavior |
+|-------|----------|
+| `GET /api/stripe/plans` | **HTTP 200** — static placeholder plans ($10 / $34 / $90), `"stripeConfigured": false`. Subscription UI can still render. |
+| `POST /api/stripe/checkout` | **HTTP 500** — `"Stripe is not configured..."` |
+| `POST /api/stripe/update-subscription` | **HTTP 500** — `"Stripe is not configured"` |
+| `POST /api/stripe/webhook` | **HTTP 500** — `"Stripe webhook is not configured"` |
+
+**When Stripe is configured but a price ID is missing for a plan:** checkout returns **HTTP 400** with a message naming the plan and env var.
+
+**When Stripe is configured but the user is not logged in:** checkout returns **HTTP 401** (not a “not configured” signal).
+
+**Verify locally or on test:** step-by-step drills in [`discussions/05_28 Section 3.md`](../discussions/05_28%20Section%203.md).
 
 **Resend / Cloudflare Turnstile:** Slots exist on `runtimeConfig` in `nuxt.config.ts`, and keys may appear in `.env.example`, but **there is no current usage in `app/` or `server/` code paths**—treat them as reserved for future work unless you wire them in.
 
