@@ -21,6 +21,7 @@
 
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
 import Stripe from 'stripe'
+import { resolveAppBaseUrl } from '../../utils/resolveAppBaseUrl'
 
 // Plan name to config key mapping
 const PLAN_CONFIG_MAP: Record<string, string> = {
@@ -126,7 +127,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Determine return URLs
-    const baseUrl = config.public.appUrl || getRequestURL(event).origin
+    const baseUrl = resolveAppBaseUrl(event, config.public.appUrl)
     const successUrl = `${baseUrl}/subscription/success?session_id={CHECKOUT_SESSION_ID}`
     const cancelUrl = `${baseUrl}/subscription?canceled=true`
 

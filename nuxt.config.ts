@@ -83,7 +83,7 @@ export default defineNuxtConfig({
     
     // Client-side (public)
     public: {
-      appUrl: 'http://localhost:4000',
+      appUrl: process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:4000',
       appEnv: 'development', // development, staging, production
       stripePublishableKey: '',
       turnstileSiteKey: '',

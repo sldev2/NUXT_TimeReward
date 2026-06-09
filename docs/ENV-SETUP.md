@@ -86,7 +86,7 @@ See the repo root **`.env.example`** for the full list and naming (that file is 
 
 **Geocoding (`GEOCODING_API_KEY`):** May be set on Vercel but is **not wired** in app code yet. Safe to omit locally until you implement geocoding. See commented entry in `.env.example`.
 
-**App URL:** Use **`NUXT_PUBLIC_APP_URL`** only (not `NUXT_PUBLIC_SITE_URL`, which is legacy and unused). See `.env.example` for redirects, checkout return URLs, and legal page links.
+**App URL:** Use **`NUXT_PUBLIC_APP_URL`** only (not `NUXT_PUBLIC_SITE_URL`, which is legacy and unused). For local dev, set it to **`http://localhost:4000`** (same port as `devServer.port` in `nuxt.config.ts`). Auth confirmation and Stripe return URLs use the **request origin** when you register or checkout from the browser, so a stale `:3000` value in `.env` no longer breaks email links. See `.env.example` for redirects, checkout return URLs, and legal page links.
 
 **Local-only (not on Vercel `test`):** `TRIAL_DAYS`, `TRIAL_BYPASS`, `NUXT_SKIP_EMAIL_CONFIRMATION`, `ALLOW_DEMO_DATA`, `NUXT_PUBLIC_ALLOW_DEMO_DATA`, `UNDER_CONSTRUCTION`, `NUXT_PUBLIC_APP_ENV` — set in local `.env` for dev; preview uses code/DB defaults. Trial length at signup is **30 days from the database default**; `app/config/trial.ts` is **reserved, not wired** — see **`discussions/04_12 remaining extraction.md` §2a**.
 
