@@ -10,7 +10,7 @@
  * Supabase can send the confirmation email and complete the redirect through
  * /confirm after the user clicks the link.
  *
- * Body: { email, password, username, firstName, lastName }
+ * Body: { email, password, username, firstName, lastName, redirectOrigin? }
  */
 
 import { serverSupabaseClient, serverSupabaseServiceRole } from '#supabase/server'
@@ -19,7 +19,7 @@ import { resolveAppBaseUrl } from '../../utils/resolveAppBaseUrl'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { email, password, username, firstName, lastName } = body
+  const { email, password, username, firstName, lastName, redirectOrigin } = body
 
   if (!email || !password || !username || !firstName) {
     throw createError({ statusCode: 400, message: 'email, password, username, and firstName are required' })
@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
   const skipConfirmation = config.skipEmailConfirmation === 'true'
   const normalizedEmail = email.trim().toLowerCase()
   const normalizedUsername = username.toLowerCase()
-  const appUrl = resolveAppBaseUrl(event, config.public.appUrl)
+  const appUrl = resolveAppBaseUrl(event, config.public.appUrl, redirectOrigin)
 
   assertRegistrationAllowed(normalizedUsername, config.boz23)
 

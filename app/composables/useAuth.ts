@@ -183,7 +183,8 @@ export function useAuth() {
             password: data.password,
             username: data.username.toLowerCase(),
             firstName: data.firstName,
-            lastName: data.lastName
+            lastName: data.lastName,
+            redirectOrigin: window.location.origin,
           }
         })
       } catch (e) {
