@@ -31,15 +31,24 @@ export const TEST_USER = {
 // ============================================================================
 
 /**
+ * Activity name headings inside the home page activity list.
+ */
+export function getActivityNameHeadings(page: Page): Locator {
+  return page.locator('div.space-y-3 > div h3');
+}
+
+/**
  * Get an activity card by name.
- * In Nuxt UI, activity cards are div.group elements containing an h3 with the activity name.
- * 
+ * In Nuxt UI, activity cards are rounded-xl rows in div.space-y-3 with an h3 for the name.
+ *
  * @example
  * const workCard = getActivityCard(page, 'Work');
  * await workCard.waitFor({ state: 'visible' });
  */
 export function getActivityCard(page: Page, activityName: string): Locator {
-  return page.locator('div.group').filter({ hasText: activityName }).first();
+  return page.locator('div.space-y-3 > div').filter({
+    has: page.getByRole('heading', { level: 3, name: activityName, exact: true }),
+  }).first();
 }
 
 /**
@@ -131,7 +140,7 @@ export function getStatusMessageContainer(page: Page): Locator {
  * In Nuxt, login is a separate page at /login.
  * 
  * @example
- * await performLogin(page, 'kyrie@example.com', '@Password1');
+ * await performLogin(page, 'kyrie', '@Password1');
  */
 export async function performLogin(
   page: Page, 

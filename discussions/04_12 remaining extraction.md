@@ -309,12 +309,12 @@ Verify against Supabase **`time-reward-test`** (test environment — not prod):
 ### 9. Playwright setup verification
 
 - [x] `npm install` inside `Playwright/` — see Progress log
-- [ ] Confirm Playwright config / `baseURL` / assumptions match the extracted app (`Playwright/playwright.config.ts`, `Playwright/index.md`)
-- [ ] Update any stale test-doc references
+- [x] Confirm Playwright config / `baseURL` / assumptions match the extracted app (`Playwright/playwright.config.ts`, `Playwright/index.md`)
+- [x] Update any stale test-doc references
 
 **Reminder:**
 
-- [ ] `Playwright/test-utils/reset-timers.ts` expects environment values from the app root `.env` (verify when running tests)
+- [x] `Playwright/test-utils/reset-timers.ts` expects environment values from the app root `.env` (verify when running tests)
 
 ## Practical next sequence
 
@@ -340,3 +340,4 @@ If the goal is to finish extraction efficiently, the next highest-value order is
 - **2026-05-10:** Checkboxes + status pass; `app/` language pass; no `junk/`; session notes archived to `docs/historical/session-notes/`; `CHANGELOG.md` migration appendix pruned, Fixed/Removed merge corruption repaired, pointers to `supabase/migrations/` and historical docs added.
 - **2026-06-07:** §4 docs/onboarding pass — repo-root paths in `docs/README.md`, `ENV-SETUP.md`, PRD, runbook, extraction docs; `_FORLATER.md` paths; prorated-rewards note → `docs/historical/migration/legacy-blazor-prorated-rewards.md`.
 - **2026-06-16:** Auth confirmation redirect fix (`resolveAppBaseUrl`, request origin over stale `NUXT_PUBLIC_APP_URL`); §7 smoke marked complete; §8 Supabase matrix verified on `time-reward-test`; Playwright §9 audit doc + GSD Milestone B planning doc; demo-data env must be `true` not `1` on Vercel. Session notes → `docs/historical/session-notes/SESSION_NOTES_2026-06-16.md`.
+- **2026-06-16:** §9 Playwright close-out — fixed activity card selectors (`div.group` → `div.space-y-3 > div` + `h3`), stale `.env` path wording, `reset-timers` ESM `__dirname` fix; `reset-timers` + `multi-tab-sync` smoke passed (`AUTOPAUSE_MINUTES=1`).

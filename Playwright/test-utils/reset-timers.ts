@@ -18,8 +18,11 @@
 import { createClient } from '@supabase/supabase-js';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
 
-// Load environment variables from the Nuxt app's .env file
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Load environment variables from the repo root .env file
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NUXT_PUBLIC_SUPABASE_URL;
@@ -27,7 +30,7 @@ const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SECRET_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
   console.warn('⚠️ Missing SUPABASE_URL or SUPABASE_SECRET_KEY in environment');
-  console.warn('   Timer reset will not work. Set these in NUXT_TimeReward/.env');
+  console.warn('   Timer reset will not work. Set these in the repo root .env');
 }
 
 /**
@@ -189,7 +192,10 @@ export async function ensureTestActivities(username: string = 'kyrie'): Promise<
 }
 
 // Allow running directly from command line
-if (require.main === module) {
+const entryScript = process.argv[1] ? path.resolve(process.argv[1]) : '';
+const isDirectRun = entryScript === fileURLToPath(import.meta.url);
+
+if (isDirectRun) {
   const username = process.argv[2] || 'kyrie';
   
   (async () => {

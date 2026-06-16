@@ -36,44 +36,21 @@ That aligns with [`05_28 extraction and dev directions.md`](05_28%20extraction%2
 | **Service role key name** | `SUPABASE_SECRET_KEY` | Matches post-extraction rename |
 | **Historical Blazor table** | Documents `:5001` → `:4000` | Useful; not a runtime dependency |
 
-So **`baseURL` and port are correct** — the main gap is **UI selectors and doc wording**, not the port.
+So **`baseURL` and port are correct** — selector and doc gaps from the original audit are **fixed** (see §1, §2, §7).
 
 ---
 
 ## Stale or risky (fix or verify before fully checking §9)
 
-### 1. Activity card selector — likely broken
+### 1. Activity card selector — **fixed (2026-06-16)**
 
-`selectors.ts` still uses:
+~~`selectors.ts` still uses `div.group`.~~ Updated to `div.space-y-3 > div` with `h3` heading match; `getActivityNameHeadings()` added; specs updated. Smoke verified with **Work** play/pause/AutoPause.
 
-```typescript
-export function getActivityCard(page: Page, activityName: string): Locator {
-  return page.locator('div.group').filter({ hasText: activityName }).first();
-}
-```
+### 2. Doc path wording — **fixed (2026-06-16)**
 
-`Playwright/index.md` still says activity cards are `div.group`.
+~~`Playwright/index.md` and `reset-timers.ts` still say `NUXT_TimeReward/.env`.~~ Wording now says **repo root `.env`**. `reset-timers` ESM `__dirname` fix applied.
 
-**Current UI:** activity rows are a plain `div` with Tailwind classes (`relative backdrop-blur-sm rounded-xl…`) — **no `group` class** on `home.vue`.
-
-**Impact:** `getActivityCard`, and anything built on it (`getActivityPlayButton`, `getActivityTime`), may **fail to find “Work”** even when the app is fine.
-
-**Verification:** In Playwright headed mode, run a one-liner or short script that calls `getActivityPlayButton(page, 'Work')` after login; if it times out, update selectors (e.g. card by `h3` text + ancestor container, or `data-testid` if you add one later).
-
-### 2. Doc path wording — minor but confusing
-
-`Playwright/index.md` line 7 and `reset-timers.ts` line 30 still say **`NUXT_TimeReward/.env`**.
-
-**Reality:** path is **repo root `.env`** (`Playwright/` → `../../.env`). Functionally correct; wording is subfolder-era.
-
-**Verification tick:** Confirm `SUPABASE_URL` + `SUPABASE_SECRET_KEY` in root `.env` and run:
-
-```bash
-cd Playwright
-npm run reset-timers
-```
-
-Expect “Timer reset complete for user: kyrie” (or a clear error if `kyrie` missing on your Supabase project).
+**Verification (done):** `npm run reset-timers` → “Timer reset complete for user: kyrie”; 4 activities present.
 
 ### 3. Logout / “logged in” helpers — fragile
 
@@ -108,13 +85,11 @@ Playwright always hits **`http://localhost:4000`**. It does **not** validate `te
 
 These are **sync re-engineering acceptance harnesses** (see [`docs/06_16 TODO (HIGH LEVEL).md`](../docs/06_16%20TODO%20(HIGH%20LEVEL).md)), not extraction blockers. Extraction §9 is satisfied by confirming **config + smoke**, not passing all three specs.
 
-### 7. Related checkbox §9 line: “Update stale test-doc references”
+### 7. Related checkbox §9 line: “Update stale test-doc references” — **done (2026-06-16)**
 
-Still open in `04_12`. Concrete items:
-
-- `div.group` in `index.md` and `selectors.ts`
-- `NUXT_TimeReward/.env` → “repo root `.env`”
-- `performLogin` JSDoc example still shows email instead of username
+- [x] `div.group` in `index.md` and `selectors.ts`
+- [x] `NUXT_TimeReward/.env` → “repo root `.env`”
+- [x] `performLogin` JSDoc example still shows email instead of username
 
 ---
 
@@ -122,10 +97,10 @@ Still open in `04_12`. Concrete items:
 
 **A. Static audit (15 min, no long tests)**
 
-- [ ] `playwright.config.ts` `baseURL` === `nuxt.config.ts` `devServer.port`
-- [ ] `index.md` dev-server instructions say repo root `npm run dev`
-- [ ] Grep Playwright for `3000`, `5001`, `Playwright2026`, `NUXT_TimeReward/` — fix or document exceptions
-- [ ] Compare `selectors.ts` to current `login.vue`, `home.vue`, `settings.vue` (especially activity card wrapper)
+- [x] `playwright.config.ts` `baseURL` === `nuxt.config.ts` `devServer.port`
+- [x] `index.md` dev-server instructions say repo root `npm run dev`
+- [x] Grep Playwright for `3000`, `5001`, `Playwright2026`, `NUXT_TimeReward/` — fix or document exceptions
+- [x] Compare `selectors.ts` to current `login.vue`, `home.vue`, `settings.vue` (especially activity card wrapper)
 
 **B. Tooling smoke**
 
@@ -139,8 +114,8 @@ npm install   # already done per progress log
 npm run reset-timers
 ```
 
-- [ ] No “Missing SUPABASE_URL or SUPABASE_SECRET_KEY”
-- [ ] User `kyrie` found; timers reset
+- [x] No “Missing SUPABASE_URL or SUPABASE_SECRET_KEY”
+- [x] User `kyrie` found; timers reset
 
 **C. Minimal E2E smoke (5 min)**
 
@@ -151,8 +126,8 @@ npx playwright test multi-tab-sync.spec.ts --headed --grep "should sync" --timeo
 
 Or a tiny ad-hoc script: login → click Work play → read `#autopause-status`.
 
-- [ ] Login reaches `/home`
-- [ ] Play button locators work (if not, fix `div.group` first)
+- [x] Login reaches `/home`
+- [x] Play button locators work (if not, fix `div.group` first)
 
 **D. Optional full sync pass (post-extraction / pre–Milestone B)**
 
@@ -178,21 +153,19 @@ Or a tiny ad-hoc script: login → click Work play → read `#autopause-status`.
 
 You can mark the main checkbox **[x]** when:
 
-1. Static audit done; **`baseURL`/port confirmed** (already true).
-2. Stale doc paths updated **or** noted in §9 with a follow-up commit.
-3. **`reset-timers` succeeds** against your dev Supabase with root `.env`.
-4. **Activity card selector fixed or verified** (likely needs a selector update).
-5. **Login → `/home` → start one activity** works in headed Playwright once.
+1. Static audit done; **`baseURL`/port confirmed** (already true). ✅
+2. Stale doc paths updated **or** noted in §9 with a follow-up commit. ✅
+3. **`reset-timers` succeeds** against your dev Supabase with root `.env`. ✅
+4. **Activity card selector fixed or verified** (likely needs a selector update). ✅
+5. **Login → `/home` → start one activity** works in headed Playwright once. ✅
 
-Keep **“Update any stale test-doc references”** as a separate sub-item until `div.group` / `.env` path wording is fixed.
+~~Keep **“Update any stale test-doc references”** as a separate sub-item until `div.group` / `.env` path wording is fixed.~~ Done — see §7 above.
 
 ---
 
 ## Bottom line
 
 - **`baseURL: http://localhost:4000` is correct** for the extracted standalone repo.
-- The checkbox is **mostly about selectors, env wiring, and doc accuracy**, not re-running 5-minute AutoPause suites.
-- The **highest-risk mismatch** today is **`div.group` activity cards** — layout changed in the Nuxt UI but Playwright wasn’t fully updated.
-- Full sync tests belong to **post-extraction / Milestone B**, but fixing selectors now makes §9 honest and unblocks a quick smoke run.
-
-**Possible follow-ups:** exact selector replacements for `getActivityCard`; minimal patch list for `selectors.ts`, `index.md`, and `reset-timers.ts` warning text.
+- Extraction §9 scope (**config + docs + selector audit + reset-timers + login/home smoke**) is **complete** as of 2026-06-16.
+- **Logout helpers** (§3) remain fragile — not required for §9 tick.
+- Full sync specs (`cross-browser`, `multi-activity`, long AutoPause runs) belong to **post-extraction / Milestone B**.

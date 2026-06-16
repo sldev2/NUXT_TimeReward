@@ -4,7 +4,7 @@ This folder contains the standalone Playwright-based end-to-end tests that ship 
 
 The focus here is the Nuxt application running locally at `http://localhost:4000`. This index documents only the Playwright assets that exist inside this repository.
 
-**Before running tests:** start the app from the **repository root** with `npm run dev` (Playwright does not auto-start the dev server here). For `npm run reset-timers`, ensure `NUXT_TimeReward/.env` contains `SUPABASE_URL` (or `NUXT_PUBLIC_SUPABASE_URL`) and `SUPABASE_SECRET_KEY` so `test-utils/reset-timers.ts` can reach Supabase.
+**Before running tests:** start the app from the **repository root** with `npm run dev` (Playwright does not auto-start the dev server here). For `npm run reset-timers`, ensure the **repo root** `.env` contains `SUPABASE_URL` (or `NUXT_PUBLIC_SUPABASE_URL`) and `SUPABASE_SECRET_KEY` so `test-utils/reset-timers.ts` can reach Supabase.
 
 ## Prerequisites
 
@@ -235,7 +235,7 @@ Compared with the earlier Blazor/MudBlazor-oriented tests, the main Nuxt differe
 | Base URL | `https://localhost:5001` | `http://localhost:4000` |
 | Login | Click SIGNIN button, fill dialog | Navigate to `/login` page |
 | Settings | Control Panel popup menu | Navigate to `/settings` page |
-| Activity cards | `div[id^='activity-card-']` | `div.group` with Tailwind classes |
+| Activity cards | `div[id^='activity-card-']` | `div.space-y-3 > div` rows with `h3` activity name |
 | Play button | `button.mud-fab` | `button.w-12.h-12.rounded-full` |
 | Status line | `#autopause-status` | `#autopause-status` (same) |
 

@@ -5,6 +5,7 @@ import {
   getAutoPauseSecondaryStatus,
   getActivityPlayButton,
   getActivityTime,
+  getActivityNameHeadings,
   setAutoPauseInterval,
   waitForEnterKey,
   TEST_USER
@@ -221,7 +222,7 @@ async function getStatusLineText(page: Page): Promise<string> {
 
 async function getFirstActivityName(page: Page): Promise<string | null> {
   try {
-    const activityCard = page.locator('div.group h3').first();
+    const activityCard = getActivityNameHeadings(page).first();
     if (await activityCard.count() > 0) {
       return await activityCard.textContent({ timeout: 2000 });
     }

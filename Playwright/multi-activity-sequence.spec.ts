@@ -5,6 +5,7 @@ import {
   getAutoPauseSecondaryStatus,
   getActivityPlayButton,
   getActivityTime,
+  getActivityNameHeadings,
   setAutoPauseInterval,
   waitForEnterKey,
   TEST_USER
@@ -309,7 +310,7 @@ test.describe('Multi-Activity Sequence Test', () => {
 
 async function getActivityNames(page: Page): Promise<string[]> {
   const activities: string[] = [];
-  const cards = page.locator('div.group h3');
+  const cards = getActivityNameHeadings(page);
   const count = await cards.count();
   
   for (let i = 0; i < count; i++) {
