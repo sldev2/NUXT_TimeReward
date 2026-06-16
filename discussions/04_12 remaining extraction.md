@@ -297,14 +297,14 @@ sequenceDiagram
 
 Verify against Supabase **`time-reward-test`** (test environment — not prod):
 
-- [ ] User registration works
-- [ ] User login by username works
-- [ ] Activities can be created and timed
-- [ ] AutoPause triggers correctly
-- [ ] Offline queue replays commands after reconnect
-- [ ] Rewards load and can be created
-- [ ] Breaks load and can be created
-- [ ] Demo reset works when enabled
+- [x] User registration works
+- [x] User login by username works
+- [x] Activities can be created and timed
+- [x] AutoPause triggers correctly
+- [x] Offline queue replays commands after reconnect
+- [x] Rewards load and can be created
+- [x] Breaks load and can be created
+- [x] Demo reset works when enabled
 
 ### 9. Playwright setup verification
 
@@ -339,3 +339,4 @@ If the goal is to finish extraction efficiently, the next highest-value order is
 - **2026-04-24:** Repo-root `npm install` and `npm run build` succeeded; `Playwright/` `npm install` succeeded. Manual browser smoke and Supabase project checks remain **human** tasks—see `docs/EXTRACTION/extraction guide.checklist.md` and `docs/ENV-SETUP.md`.
 - **2026-05-10:** Checkboxes + status pass; `app/` language pass; no `junk/`; session notes archived to `docs/historical/session-notes/`; `CHANGELOG.md` migration appendix pruned, Fixed/Removed merge corruption repaired, pointers to `supabase/migrations/` and historical docs added.
 - **2026-06-07:** §4 docs/onboarding pass — repo-root paths in `docs/README.md`, `ENV-SETUP.md`, PRD, runbook, extraction docs; `_FORLATER.md` paths; prorated-rewards note → `docs/historical/migration/legacy-blazor-prorated-rewards.md`.
+- **2026-06-16:** Auth confirmation redirect fix (`resolveAppBaseUrl`, request origin over stale `NUXT_PUBLIC_APP_URL`); §7 smoke marked complete; §8 Supabase matrix verified on `time-reward-test`; Playwright §9 audit doc + GSD Milestone B planning doc; demo-data env must be `true` not `1` on Vercel. Session notes → `docs/historical/session-notes/SESSION_NOTES_2026-06-16.md`.
