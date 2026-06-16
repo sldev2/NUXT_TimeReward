@@ -121,4 +121,4 @@ npm run build
 - Auth callback behavior is resolved.
 - Deployment/env config is coherent for **development and test** (prod deferred).
 - The canonical PRD is in the extracted repo.
-- Another developer can set up the app using only the extracted repo (local + test preview).
+- *(Optional / deferred)* Another developer can set up the app using only the extracted repo (local + test preview) — not required for extraction sign-off; see `discussions/04_12 remaining extraction.md`.

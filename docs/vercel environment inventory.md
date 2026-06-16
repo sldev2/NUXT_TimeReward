@@ -41,6 +41,6 @@ These variables are set for `production`, `preview`, and `development`:
 ## Notes
 
 - The `preview` branch-specific values above are scoped to the Git branch `test`.
-- **`NUXT_PUBLIC_SITE_URL`:** If still present on Vercel, **remove it** — the app reads **`NUXT_PUBLIC_APP_URL`** only (legacy rename; see `docs/env naming preference.md`).
+- **`NUXT_PUBLIC_SITE_URL`:** Removed — the app reads **`NUXT_PUBLIC_APP_URL`** only (legacy rename; confirmed off Vercel `test` 2026-06-16).
 - Shared secret-like values that also target `development` were stored as `encrypted` rather than `sensitive`, because Vercel does not allow `sensitive` env vars to target `development`.
 - Production-only and branch-specific preview secrets were stored with Vercel's stricter secret handling where supported.

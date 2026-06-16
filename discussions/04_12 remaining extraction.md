@@ -15,6 +15,8 @@ Extraction closure applies to **development** and **test** only:
 
 **Production / `main` deploy env is out of scope** for extraction checkboxes until launch. Track prod values in your spreadsheet when needed; do not block “Done when” on prod reconciliation.
 
+**Third-party onboarding pass is optional:** verifying that *another* developer can cold-start from the repo alone is **not required** for extraction sign-off — deployment either way will need testing; defer until after launch prep or when onboarding a collaborator (not planned for the coming week).
+
 **Source of truth for values:** your env spreadsheet. Repo docs (`.env.example`, `ENV-SETUP.md`) describe **names, usage, and dev/test expectations** — not a full copy of every cell.
 
 ## Already completed
@@ -117,7 +119,7 @@ Snapshot date: **2026-06-07**.
 
 | Variable | local `.env` | Vercel `test` | `.env.example` | `ENV-SETUP.md` | code usage |
 |----------|:---:|:---:|:---:|:---:|---|
-| `NUXT_PUBLIC_SITE_URL` | ✗ | ✓ ⚠ | ✗ | ✗ | **remove** — **zero references** in code; renamed to **`NUXT_PUBLIC_APP_URL`** (see `docs/env naming preference.md`) |
+| `NUXT_PUBLIC_SITE_URL` | ✗ | ✗ | ✗ | ✗ | **removed** from Vercel (2026-06-16) — zero references in code; use **`NUXT_PUBLIC_APP_URL`** only |
 
 #### `app/config/trial.ts` — helper exists but is not wired
 
@@ -243,7 +245,7 @@ sequenceDiagram
 5. **`KV_REST_API_*` and `BOZ23` — resolved (2026-06-07):** Short notes added to `ENV-SETUP.md`.
 6. **Reserved (slot-only or documented, not wired):** `NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, **`NUXT_PUBLIC_SHOW_*` / `_HIDE_LANDING_PAGE_COUNTERS`**, **`GEOCODING_API_KEY`**, `TURNSTILE_*`, `RESEND_API_KEY`, `EMAIL_*` — intentional; label in **2b**.
 7. **`NUXT_STRIPE_PRICE_ID_DEFAULT` removed (2026-06-07):** Legacy nameless checkout fallback deleted; `POST /api/stripe/checkout` requires `plan` or `priceId`. Remove from local `.env` / Vercel if still set.
-8. **`NUXT_PUBLIC_SITE_URL` on Vercel `test` (2026-06-07):** Legacy duplicate of **`NUXT_PUBLIC_APP_URL`** — **remove from Vercel**; app never reads `SITE_URL`. Keep `NUXT_PUBLIC_APP_URL` on preview.
+8. **`NUXT_PUBLIC_SITE_URL` on Vercel `test` — resolved (2026-06-16):** Removed from Vercel; app reads **`NUXT_PUBLIC_APP_URL`** only.
 9. **Local-only vars (2026-06-07):** `TRIAL_*`, `NUXT_SKIP_EMAIL_CONFIRMATION`, demo flags, `UNDER_CONSTRUCTION`, `NUXT_PUBLIC_APP_ENV` — documented in §2a “Local-only” table; absence on Vercel `test` is intentional. See **`trial.ts` not wired** note for trial duration behavior.
 
 ### 3. External integrations review
@@ -298,6 +300,8 @@ sequenceDiagram
 Verify against Supabase **`time-reward-test`** (test environment — not prod):
 
 - [x] User registration works
+- [x] Email confirmation redirect on preview (`test.myfocusrewards.com` → `/confirm`; not localhost) — verified 2026-06-16
+- [x] Post-confirm login on preview — verified 2026-06-16
 - [x] User login by username works
 - [x] Activities can be created and timed
 - [x] AutoPause triggers correctly
@@ -318,21 +322,36 @@ Verify against Supabase **`time-reward-test`** (test environment — not prod):
 
 ## Practical next sequence
 
-If the goal is to finish extraction efficiently, the next highest-value order is:
+**Extraction core (dev + test) is complete as of 2026-06-16.** §1–§4, §6–§9 and “Done when” (except optional cold-start onboarding) are closed.
 
-1. [ ] Review deployment / env assumptions for **dev + test** (§2, §3)
-2. [ ] Verify target Supabase project and app behavior (§8)
-3. [ ] `npm run dev` + install/build + smoke checks (§7)
-4. [x] Historical-doc policy for `CHANGELOG.md` and session notes (§1) — closed 2026-05-10
+**Closed in this sequence:**
+
+1. [x] Review deployment / env assumptions for **dev + test** (§2, §3) — 2026-06-07+
+2. [x] Verify target Supabase project and app behavior (§8) — `time-reward-test`, 2026-06-16
+3. [x] `npm run dev` + install/build + smoke checks (§7) — 2026-06-16
+4. [x] Playwright config + selector audit + smoke (§9) — 2026-06-16
+5. [x] Historical-doc policy for `CHANGELOG.md` and session notes (§1) — 2026-05-10
+
+**Optional / when you have time (not extraction blockers):**
+
+- [x] Finish **preview** manual pass on `test.myfocusrewards.com` — auth confirmation redirect verified (deploy + Supabase Auth URLs; link returns to `test.myfocusrewards.com/confirm`, not localhost) — 2026-06-16
+- [x] Remove legacy **`NUXT_PUBLIC_SITE_URL`** from Vercel `test` (§2a item 8) — confirmed removed 2026-06-16
+- [ ] §5 documentation simplification (consolidate setup / test / release docs)
+- [~] Cold-start onboarding by another developer — deferred (see “Done when”)
+
+**After extraction — product work, not extraction:**
+
+- GSD **Milestone B** (timing/sync re-engineering) — see `docs/06_16 TODO (HIGH LEVEL).md`
+- **Production launch** checklist (separate Supabase project, prod env, `myfocusrewards.com`) — out of scope until launch
 
 ## Done when
 
-- [ ] The app runs from the extracted repo without depending on the parent repo *(verify via §7–§8 on dev + test)*
+- [x] The app runs from the extracted repo without depending on the parent repo *(verify via §7–§8 on dev + test)*
 - [x] Core onboarding docs do not require the parent repo for setup *(standalone `docs/README.md`, `docs/ENV-SETUP.md`, extraction checklist)*
-- [ ] **`time-reward-test`** is connected and migrated *(test Supabase — prod project deferred)*
-- [ ] Deployment / env config is coherent for **development and test** *(local `.env` + Vercel Preview `test`; prod not required)*
+- [x] **`time-reward-test`** is connected and migrated *(test Supabase — prod project deferred)*
+- [x] Deployment / env config is coherent for **development and test** *(local `.env` + Vercel Preview `test`; prod not required)*
 - [x] The canonical PRD is inside the extracted repo (`docs/REARCHITECT/PRD for NUXT.md`)
-- [ ] Another developer can set up the app using only the extracted repo *(local dev + test preview; prod launch checklist separate)*
+- [~] ~~Another developer can set up the app using only the extracted repo~~ **Optional / deferred** *(local dev + test preview; prod launch checklist separate)* — not a “Done when” blocker; onboarding docs exist (`docs/README.md`, `ENV-SETUP.md`); full cold-start verification deferred (2026-06-16)
 
 ## Progress (automated / agent)
 
@@ -341,3 +360,6 @@ If the goal is to finish extraction efficiently, the next highest-value order is
 - **2026-06-07:** §4 docs/onboarding pass — repo-root paths in `docs/README.md`, `ENV-SETUP.md`, PRD, runbook, extraction docs; `_FORLATER.md` paths; prorated-rewards note → `docs/historical/migration/legacy-blazor-prorated-rewards.md`.
 - **2026-06-16:** Auth confirmation redirect fix (`resolveAppBaseUrl`, request origin over stale `NUXT_PUBLIC_APP_URL`); §7 smoke marked complete; §8 Supabase matrix verified on `time-reward-test`; Playwright §9 audit doc + GSD Milestone B planning doc; demo-data env must be `true` not `1` on Vercel. Session notes → `docs/historical/session-notes/SESSION_NOTES_2026-06-16.md`.
 - **2026-06-16:** §9 Playwright close-out — fixed activity card selectors (`div.group` → `div.space-y-3 > div` + `h3`), stale `.env` path wording, `reset-timers` ESM `__dirname` fix; `reset-timers` + `multi-tab-sync` smoke passed (`AUTOPAUSE_MINUTES=1`).
+- **2026-06-16:** “Another developer can set up” marked **optional / deferred** — not blocking extraction; cold-start pass deferred past the coming week.
+- **2026-06-16:** **`NUXT_PUBLIC_SITE_URL`** confirmed removed from Vercel `test` env.
+- **2026-06-16:** Preview auth confirmation redirect verified on `test.myfocusrewards.com` after deploy + Supabase Auth URL config; post-confirm login verified.

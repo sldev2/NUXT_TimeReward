@@ -61,18 +61,19 @@
 
 ### 3.4 Email Verification Flow (Deferred to end of Manual Testing Plan)
 
-> **Status**: Postponed — requires `NUXT_SKIP_EMAIL_CONFIRMATION` set to `"false"` and a working Resend API key in `.env`. The registration server endpoint already supports this mode (creates user unconfirmed, returns `emailConfirmed: false`, client shows "check your email" message). Test this before production deployment.
+> **Status**: Postponed for **local** `.env` pass (requires `NUXT_SKIP_EMAIL_CONFIRMATION="false"` + Resend locally). **Preview flow verified 2026-06-16** on `test.myfocusrewards.com`: register → confirmation email → link to `/confirm` (not localhost) → post-confirm login.
 
-- [ ] (both) Configure a real Resend API key in `.env` (`RESEND_API_KEY`)
-- [ ] (both) Set `NUXT_SKIP_EMAIL_CONFIRMATION="false"` in `.env`
-- [ ] (human) Register a new user at `/register`
-  - [ ] Verify the app shows "Account created! Please check your email to confirm your account before signing in."
-  - [ ] Verify the user **cannot** log in before confirming their email
-- [ ] (human) Check the email inbox for a confirmation link from Supabase
-  - [ ] Verify the email is received and contains a valid confirmation link
-- [ ] (human) Click the confirmation link
-  - [ ] Verify the link confirms the email (Supabase handles this natively)
-  - [ ] Verify the user can now log in with their credentials
+- [ ] (both) Configure a real Resend API key in `.env` (`RESEND_API_KEY`) — local pass only
+- [ ] (both) Set `NUXT_SKIP_EMAIL_CONFIRMATION="false"` in `.env` — local pass only
+- [x] (human) Register a new user at `/register` — preview, 2026-06-16
+  - [ ] Verify the app shows "Account created! Please check your email…" — local only *(assumed on preview; not explicitly re-checked)*
+  - [ ] Verify the user **cannot** log in before confirming — local only
+- [x] (human) Check the email inbox for a confirmation link from Supabase — preview, 2026-06-16
+  - [x] Verify the email is received and contains a valid confirmation link — preview, 2026-06-16
+- [x] (human) Click the confirmation link — preview, 2026-06-16
+  - [x] Verify the link confirms the email (Supabase handles this natively) — **preview** `test.myfocusrewards.com`, 2026-06-16
+  - [x] Verify confirmation redirect lands on preview `/confirm` (not localhost) — 2026-06-16
+  - [x] Verify the user can now log in with their credentials — preview `test.myfocusrewards.com`, 2026-06-16
 - [ ] (both) Restore `NUXT_SKIP_EMAIL_CONFIRMATION="true"` in `.env` after testing
 
 ---
