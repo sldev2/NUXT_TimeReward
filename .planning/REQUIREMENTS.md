@@ -96,4 +96,4 @@ Which phases cover which requirements. Finalized during roadmap creation.
 
 ---
 *Requirements defined: 2026-06-17*
-*Last updated: 2026-06-17 after initial definition*
+*Last updated: 2026-06-17 — traceability finalized during roadmap creation (3 phases, 14/14 mapped)*
