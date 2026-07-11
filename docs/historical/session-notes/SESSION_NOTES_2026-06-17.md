@@ -115,6 +115,8 @@ Layer 3 — Milestone C         Resend Phases 4–5 (optional)
 
 ## Recommended next session (after chat restart)
 
+> **Superseded:** See [`SESSION_NOTES_2026-07-11.md`](SESSION_NOTES_2026-07-11.md). GSD Milestone A was bootstrapped (`/gsd-new-project --auto`); Phase 1 not yet planned/executed. Next: domain/From decision + `/gsd-discuss-phase 1` or `/gsd-plan-phase 1`.
+
 1. **Commit** `docs/06_17 TODO (HIGH LEVEL).md` (and this session note if desired).
 2. **Bootstrap GSD:** `/gsd-new-project --auto` with `@docs/PRD for Resend use.md`, `@discussions/05_28 extraction and dev directions.md`, `@docs/ENV-SETUP.md`, `@discussions/04_12 remaining extraction.md` — Milestone A, Phases 1–3 only.
 3. **`/gsd-plan-phase 1`** — Phase A1 (mostly human: Resend domain verify → Supabase custom SMTP → acceptance signup from `support@myfocusrewards.com`).
