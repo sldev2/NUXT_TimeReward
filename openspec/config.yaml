@@ -1,0 +1,18 @@
+schema: intent-driven
+
+context: |
+  Tech stack: Nuxt 3, TypeScript, Supabase (Postgres + RPCs), Vercel
+  We use conventional commits
+  Domain: time-tracking / productivity timer app
+  Key modules: timer state machine, activity tracking, offline queue, multi-tab sync
+  Testing: Playwright e2e, manual test plans
+
+rules:
+  proposal:
+    - Must use grill-me skill
+  design:
+    - Must use c4-diagrams skill
+  adr:
+    - Must use architectural-decision-records skill
+  spec:
+    - Must use gherkin-authoring skill 
