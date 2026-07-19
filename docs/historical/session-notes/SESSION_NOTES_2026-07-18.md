@@ -37,6 +37,8 @@ Preserved GSD research value as GSD-free docs (do not need `.planning/` anymore)
 
 ## Open decisions (not blocking new folder)
 
+> **Superseded for Resend A/B:** See [`SESSION_NOTES_2026-07-19.md`](SESSION_NOTES_2026-07-19.md) — **Option A locked**; Gmail/Outlook header check still open.
+
 - Resend **Option A vs B** (root From vs `send.` From) — resolve before Resend Phase 1 SMTP flip; documented in `RESEND-DOMAIN-AND-PITFALLS.md`.
 - Which **single** sync slice is OpenSpec Change #1 (multi-tab auth vs offline timestamps vs AutoPause vs Realtime drift).
 

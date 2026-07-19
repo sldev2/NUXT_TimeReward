@@ -66,16 +66,16 @@ Current `HEAD` also contains PAUL, OpenSpec/intent scaffold (`0b1c174`), and GSD
 
 Work in the **current / historical** repo that still has `.planning/` (or copy the already-written distill files if present).
 
-- [ ] `(human only)` Confirm you are on a commit that still has `.planning/` **or** that the four distill files under `docs/` already exist (see list above). Prefer verifying files exist rather than re-deriving from memory.
-- [ ] `(human only)` Confirm distill files are present and readable:
+- [x] `(human only)` Confirm you are on a commit that still has `.planning/` **or** that the four distill files under `docs/` already exist (see list above). Prefer verifying files exist rather than re-deriving from memory.
+- [x] `(human only)` Confirm distill files are present and readable:
   - `docs/migrate to intent-driven-template-cursor.md` (this file)
   - `docs/RESEND-MILESTONE-A.md`
   - `docs/RESEND-DOMAIN-AND-PITFALLS.md`
   - `docs/SYNC-REENGINEERING-POINTERS.md`
   - `docs/historical/session-notes/SESSION_NOTES_2026-07-18.md`
-- [ ] `(ai only)` If any distill file is missing: regenerate from `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/research/SUMMARY.md` + `PITFALLS.md`, and `docs/PRD for Resend use.md` — **GSD-free** (no `.planning` paths as process, no slash-commands for GSD).
-- [ ] `(both)` Skim `docs/RESEND-DOMAIN-AND-PITFALLS.md` and mark whether **Option A (root From)** vs **Option B (`send.` subdomain From)** is still undecided. Do **not** flip Supabase SMTP until that decision is made (can wait until Resend work starts).
-- [ ] `(human only)` Optional: commit these distill/migrate docs on the old tree so they are not only sitting in a dirty working copy — or keep them as loose files to copy. Either way, treat them as **carry-in cargo** for §1.
+- [N/A] `(ai only)` If any distill file is missing: regenerate from `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, `.planning/research/SUMMARY.md` + `PITFALLS.md`, and `docs/PRD for Resend use.md` — **GSD-free** (no `.planning` paths as process, no slash-commands for GSD).
+- [x] `(both)` Confirm `docs/RESEND-DOMAIN-AND-PITFALLS.md` records the Resend sender decision: **Option A** — verify root `myfocusrewards.com`, send From `support@myfocusrewards.com`. Do **not** configure Supabase Auth Custom SMTP with Resend until the Gmail + Outlook header check passes (or you consciously accept that risk).
+- [x] `(human only)` Optional: commit these distill/migrate docs on the old tree so they are not only sitting in a dirty working copy — or keep them as loose files to copy. Either way, treat them as **carry-in cargo** for §1.
 
 ### §0 detail — What “export useful GSD research” means (do not skip)
 

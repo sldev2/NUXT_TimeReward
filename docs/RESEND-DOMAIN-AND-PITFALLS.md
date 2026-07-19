@@ -41,12 +41,60 @@ Verify only `send.` but send From `support@myfocusrewards.com` (root). Resend ma
 
 ### Decision checkbox
 
-- [ ] `(human only)` Choose **Option A** or **Option B**  
-- [ ] `(human only)` Confirm Resend shows that domain **Verified**  
-- [ ] `(both)` Update env docs / `.env.example` / PRD sender line if B differs from historical PRD text  
-- [ ] `(human only)` One real Gmail + Outlook check: headers show SPF/DKIM pass (and DMARC as expected); do not trust “Delivered” alone  
+- [x] `(human only)` Choose **Option A** or **Option B** — **Option A** (root `myfocusrewards.com` / From `support@myfocusrewards.com`)  
+- [x] `(human only)` Confirm Resend shows that domain **Verified**  
+- [x] `(both)` Update env docs / `.env.example` / PRD sender line if B differs from historical PRD text — **N/A for Option A** (PRD already matches). Added `EMAIL_FROM_ADDRESS` / `EMAIL_FROM_NAME` + `RESEND_SMTP_*` comments to `.env.example` (still unused in app code until Phase 3).  
+- [ ] `(human only)` One real Gmail + Outlook check: headers show SPF/DKIM pass (and DMARC as expected); do not trust “Delivered” alone — **how-to below (§2.1)**
 
 **DMARC note:** `_dmarc` may be `p=none` today — failures won’t bounce hard yet, but spam placement still hurts signup. Align first; tighten policy later when volume justifies.
+
+### §2.1 What the Gmail + Outlook header check means
+
+**Why this exists:** Resend (and Supabase) can report a send as **Delivered** / **sent** while the message still lands in **Spam**, is silently filtered, or fails authentication in ways users never see. Signup confirmation only works if a real human inbox accepts and shows the message. Provider dashboards are necessary but not sufficient.
+
+**When to run it:** After Resend shows the **root** domain Verified (Option A) and you can send *some* mail from `support@myfocusrewards.com` (or `TimeReward <support@myfocusrewards.com>`). Prefer:
+
+1. **Earliest / easiest:** Resend dashboard → send a test email to yourself, **or**
+2. **Closer to production path:** after Supabase Custom SMTP is configured — register with `NUXT_SKIP_EMAIL_CONFIRMATION=false` and use the real confirmation mail.
+
+You do **not** need the Nuxt `EmailDeliveryService` for this check. Channel A (dashboard / SMTP) is enough.
+
+**What “pass” looks like (Authentication-Results / similar):**
+
+| Check | What you want to see | Bad signs |
+|-------|----------------------|-----------|
+| **SPF** | `spf=pass` (receiving domain authorized the sending IP) | `spf=fail` / `softfail` — often broken or unmerged SPF on `myfocusrewards.com` (Workspace + Resend must share **one** SPF TXT) |
+| **DKIM** | `dkim=pass` with a signature domain aligned with your From (Option A → signing/`d=` for `myfocusrewards.com`) | `dkim=fail` / missing DKIM — domain not fully verified or wrong domain signed |
+| **DMARC** | `dmarc=pass` if policy is evaluated; with `p=none` you may still see `pass`/`fail` in results without rejection | `dmarc=fail` (alignment) — From domain doesn’t align with SPF/DKIM domains |
+
+Also verify **human UX:** message is in **Inbox** (not Spam/Junk/Promotions-only if that blocks the confirm CTA), From shows the expected brand, and any confirm link looks correct.
+
+**Do not treat as success:** Resend UI “Delivered”, Supabase “email sent”, or “I got *an* email” without opening headers — spam-foldered confirm mail = broken signup for many users.
+
+#### Step A — Send one real message to Gmail
+
+1. Use a **personal Gmail** address you control (not only Workspace if you can help it — consumer Gmail is a strict filter).  
+2. Send from Resend test UI **or** trigger a real signup confirmation (skip flag false).  
+3. In Gmail → open the message → **⋮ (More)** → **Show original** (or “View message details”).  
+4. In the original, find **`Authentication-Results`** (and often `Received-SPF`, `DKIM-Signature`). Confirm `spf=pass`, `dkim=pass`, and DMARC as expected.  
+5. Note whether the message landed in **Inbox** vs **Spam**.
+
+#### Step B — Same check in Outlook / Microsoft 365
+
+1. Send the **same style** of message to an Outlook.com or Microsoft 365 mailbox.  
+2. Open the message → **…** / View → **View message details** / **View message source** (wording varies by Outlook web vs desktop).  
+3. Again look for Authentication-Results / SPF / DKIM / DMARC.  
+4. Confirm Inbox vs Junk.
+
+Outlook and Gmail often disagree; **both** matter because your users use both.
+
+#### Step C — Record the result
+
+- [x] Gmail: Inbox? SPF/DKIM/DMARC notes: _______________  
+- [FOR LATER] Outlook: Inbox? SPF/DKIM/DMARC notes: _______________  
+- [ ] If either fails: fix DNS/SPF merge or Resend domain config **before** relying on signup email in test/prod; do not “hope Delivered is enough.”
+
+**Option A–specific reminder:** Because root MX is Google Workspace, your SPF record on `myfocusrewards.com` must **include both** Google and Resend (single TXT). A common failure mode after “Verified” in Resend is still `spf=fail` at Gmail because the old SPF only had Google’s `include:`.
 
 ---
 
