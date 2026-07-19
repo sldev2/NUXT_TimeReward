@@ -81,13 +81,17 @@ Work in the **current / historical** repo that still has `.planning/` (or copy t
 
 The GSD bootstrap did not invent Resend; it wrapped `docs/PRD for Resend use.md` and added research that is easy to lose if you only keep the PRD.
 
-**Must preserve (content, not GSD format):**
+**Already preserved; copy these files into the new tree:**
 
-1. **Checkable Phase 1–3 requirements** (SMTP-01…06, RVER-01…03, RAPI-01…05) and success criteria — in `RESEND-MILESTONE-A.md`.
-2. **Domain / DKIM / From alignment** — Resend “Verified” ≠ DNS record present; root `myfocusrewards.com` vs `send.myfocusrewards.com` vs `support@…` From address; Option A vs B tradeoffs — in `RESEND-DOMAIN-AND-PITFALLS.md`.
-3. **Critical pitfalls** — Site URL port **4000** (not 3000); SMTP username literal `resend`; custom SMTP does not auto-raise `rate_limit_email_sent`; enumeration-safe resend; Upstash-backed IP rate limit; server-only API key; graceful no-op when key missing — same file.
-4. **Architecture reminder** — Channel A = Supabase SMTP; Channel B = Resend HTTP API; Phase 2 resend-verification is still Channel A (`supabase.auth.resend`), not Channel B.
-5. **Sync pointers** without prescribing GSD milestones — in `SYNC-REENGINEERING-POINTERS.md`.
+The useful GSD research has already been distilled into normal docs. During §1, copy the files below into the fresh `extraction_done` tree using the same relative paths. There is nothing else to extract from `.planning/` unless one of these files is missing.
+
+1. `docs/RESEND-MILESTONE-A.md` — checkable Phase 1–3 requirements (SMTP-01…06, RVER-01…03, RAPI-01…05) and success criteria.
+2. `docs/RESEND-DOMAIN-AND-PITFALLS.md` — domain / DKIM / From alignment, Option A sender decision, and Resend pitfalls.
+3. `docs/SYNC-REENGINEERING-POINTERS.md` — sync pointers without prescribing GSD milestones.
+4. `docs/migrate to intent-driven-template-cursor.md` — this runbook.
+5. `docs/historical/session-notes/SESSION_NOTES_2026-07-19.md` — latest handoff note only; older session notes are background, not required carry-in.
+
+Key Resend details now live in those docs: Resend “Verified” is not the same as DNS-present; Channel A = Supabase Auth Custom SMTP; Channel B = Resend HTTP API; Phase 2 resend-verification still uses Channel A (`supabase.auth.resend`); Site URL must use port **4000** locally; SMTP username is literal `resend`; Supabase custom SMTP does not auto-raise `rate_limit_email_sent`; resend-verification must be enumeration-safe and IP-rate-limited; the Resend API key stays server-only; missing keys should fail gracefully where documented.
 
 **Safe to abandon:**
 - `.planning/config.json`, `STATE.md`, workflow agent settings  
@@ -116,7 +120,7 @@ The GSD bootstrap did not invent Resend; it wrapped `docs/PRD for Resend use.md`
   - `docs/RESEND-MILESTONE-A.md`
   - `docs/RESEND-DOMAIN-AND-PITFALLS.md`
   - `docs/SYNC-REENGINEERING-POINTERS.md`
-  - `docs/historical/session-notes/SESSION_NOTES_2026-07-18.md`
+  - `docs/historical/session-notes/SESSION_NOTES_2026-07-19.md`
 - [ ] `(human only)` Copy local secrets carefully: recreate `.env` from your spreadsheet / old machine `.env` — **never commit** `.env`. Use `.env.example` as the name list.
 - [ ] `(human only)` Open the **new** folder as the Cursor workspace for all remaining sections. Tell the agent: *“Read `docs/migrate to intent-driven-template-cursor.md` and continue from the first unchecked item.”*
 
