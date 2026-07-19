@@ -104,11 +104,13 @@ Key Resend details now live in those docs: Resend “Verified” is not the same
 ## §1 — Create the fresh brownfield folder from `extraction_done`
 
 - [ ] `(human only)` Create a **new empty directory** outside the old working tree (e.g. sibling folder). Do not reuse the old folder as “cleaned HEAD” unless you fully understand you must delete `.planning/`, PAUL, and late OpenSpec commits.
-- [ ] `(human only)` Populate it from tag **`extraction_done`** / commit **`ea90d9e`**. Acceptable methods (pick one):
-  - `git clone <repo-url> <new-dir>` then `git checkout extraction_done` (or `ea90d9e`), **or**
-  - `git archive ea90d9e | tar -x -C <new-dir>` (no `.git` — then `git init` if you want a new history), **or**
-  - New GitHub repo seeded from that tree  
-  Record which method you used in `SESSION_NOTES` or a one-line note at the bottom of this file.
+- [ ] `(human only)` Populate it from tag **`extraction_done`** / commit **`ea90d9e`**. Recommended method for the new GitHub repo:
+  - Create empty repo `sldev2/TimeReward` on GitHub.
+  - Clone the old repo locally only as the source material: `git clone --no-tags https://github.com/sldev2/NUXT_TimeReward.git TimeReward`.
+  - In the new local folder, set `main`, `develop`, and `test` to **all point at `ea90d9e`**.
+  - Remove the old `origin`, add `https://github.com/sldev2/TimeReward.git`, and push only `main develop test`.
+  - Do **not** push `--all` or `--tags`; those could carry later old-repo refs.
+  Record the exact method used in `SESSION_NOTES` or a one-line note at the bottom of this file.
 - [ ] `(human only)` Confirm the new tree has **no** `.planning/` directory and **no** `.cursor/rules` file whose body is the GSD injection (at `ea90d` these should be absent).
 - [ ] `(human only)` Confirm the new tree **does** include:
   - `docs/PRD for Resend use.md`
@@ -121,6 +123,16 @@ Key Resend details now live in those docs: Resend “Verified” is not the same
   - `docs/RESEND-DOMAIN-AND-PITFALLS.md`
   - `docs/SYNC-REENGINEERING-POINTERS.md`
   - `docs/historical/session-notes/SESSION_NOTES_2026-07-19.md`
+- [ ] `(human only)` Do **not** copy generated, local, secret, or deployment-link folders/files from the old tree:
+  - Nuxt/Nitro build and dev output: `.nuxt/`, `.output/`, `.nitro/`, `.cache/`, `dist/`
+  - Local Vercel link state: `.vercel/` (re-link the new repo/folder intentionally later)
+  - Dependencies and reports: `node_modules/`, coverage, logs, Playwright reports/results, `supabase/.temp/`
+  - Secrets: `.env`, `.env.*` except `.env.example`
+- [ ] `(both)` Decide project-local agent/tooling carry-forward deliberately:
+  - Do **not** copy `.planning/` or GSD-injected `.cursor/rules`.
+  - Carry `.agents/skills/architectural-decision-records/`, `c4-diagrams/`, `gherkin-authoring/`, and `glossary/` only if those authoring helpers still belong in the new repo.
+  - Carry `.agents/skills/openspec-git-discipline/` only if the new OpenSpec workflow should keep that git discipline.
+  - Carry `.opencode/` only if it belongs to the intent-driven-template workflow; otherwise let the template install recreate what it needs.
 - [ ] `(human only)` Copy local secrets carefully: recreate `.env` from your spreadsheet / old machine `.env` — **never commit** `.env`. Use `.env.example` as the name list.
 - [ ] `(human only)` Open the **new** folder as the Cursor workspace for all remaining sections. Tell the agent: *“Read `docs/migrate to intent-driven-template-cursor.md` and continue from the first unchecked item.”*
 
